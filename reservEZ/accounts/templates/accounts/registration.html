@@ -1,0 +1,10 @@
+{% extends "accounts/base.html" %}
+
+{% block content %}
+{% load crispy_forms_tags %}
+<h1 class="text-primary">Registrazione</h1>
+<form id="user-registration-form" method="post">
+    {% csrf_token %}
+    {% crispy form %}
+</form>
+{% endblock %}
