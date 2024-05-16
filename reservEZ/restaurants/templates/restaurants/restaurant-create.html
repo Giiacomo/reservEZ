@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <center><h1 class="mt-4 mb-4">{{ title }}</h1></center>
+
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            <strong>Error:</strong>
+            <ul>
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        <li>{{ field }}: {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <form class="myform" method="post">
+        {% csrf_token %}
+        {{ restaurant_form|crispy }}
+        {{ address_form|crispy }}
+        <button type="submit" class="btn btn-success">Submit</button>
+    </form>
+{% endblock %}

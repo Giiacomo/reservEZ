@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %} 
+
+{% block title %}
+{{ restaurant.name }}
+{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'restaurants/css/styles.css' %}">
+{% endblock %}
+
+
+{% block content %}
+<div class="container-fluid mt-5">
+    <div class="row">
+        <div class="col-md-12 mb-4">
+            <div class="card border-primary mb-3">
+                <div class="card-header">Restaurant Info</div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ restaurant.name }}</h5>
+                    <p class="card-text">{{ restaurant.description }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="sticky-top">
+                <h3 class="mb-4">Menu Sections</h3>
+                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                    {% for section in menu_sections %}
+                    <a class="nav-link" id="v-pills-{{ section.id }}-tab" data-toggle="pill" href="#v-pills-{{ section.id }}" role="tab" aria-controls="v-pills-{{ section.id }}" aria-selected="false">{{ section.sname }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4" id="menu-sections" style="height: 500px; overflow-y: auto;">
+            <div class="tab-content" id="v-pills-tabContent">
+                {% for section in menu_sections %}
+                <div class="tab-pane {% if forloop.first %}show active{% endif %}" id="v-pills-{{ section.id }}" role="tabpanel" aria-labelledby="v-pills-{{ section.id }}-tab">
+                    <div class="card mt-3">
+                        <div class="card-body">
+                            <h3 class="card-title">{{ section.sname }}</h3>
+                            {% for dish in section.dishes.all %}
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h5>{{ dish.dname }}</h5>
+                                    <p>{{ dish.description }}</p>
+                                </div>
+                                <div class="col-md-4 text-right">
+                                    <p><strong>{{ dish.price }}</strong></p>
+                                </div>
+                            </div>
+                            <hr>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-primary mb-3">
+                <div class="card-header">Reservation</div>
+                <div class="card-body">
+                    <p class="card-text">Make a reservation for this restaurant.</p>
+                </div>
+            </div>
+            <div class="card border-primary mb-3">
+                <div class="card-header">Order</div>
+                <div class="card-body">
+                    <p class="card-text">Place an order from this restaurant.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'dashboard.html' %}
+
+{% block menu_dashboard %}
+<h2 class="my-3">Menu</h2>
+<ul class="nav flex-column">
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'add_section' %}">Sections</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'add_dish' %}">Dishes</a>
+    </li>
+</ul>
+<hr class="separation-line">
+
+<h2 class="mt-5">Info</h2>
+<ul class="nav flex-column">
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'set_address' %}">Indirizzo</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'set_opening_hours' %}">Orari</a>
+    </li>
+</ul>
+<hr class="separation-line">
+{% endblock %}
+
+{% block content_dashboard %}
+{% endblock %}

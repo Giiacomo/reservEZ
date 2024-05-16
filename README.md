@@ -2,7 +2,7 @@
 
 ## Introduzione
 
-Il Sistema di Gestione delle Prenotazioni ai Ristoranti è una piattaforma online progettata per facilitare la prenotazione e l'ordinazione presso una vasta gamma di ristoranti. Gli utenti possono registrarsi e cercare ristoranti, visualizzare i loro menu, effettuare prenotazioni e ordini, e ricevere raccomandazioni personalizzate in base alle loro preferenze gastronomiche. I ristoranti, dopo essersi registrati, possono gestire le proprie pagine con informazioni dettagliate, inclusi foto del locale, descrizioni e menu.
+Il Sistema di Gestione delle Prenotazioni ai Ristoranti è una applicazione web progettata per facilitare la prenotazione e l'ordinazione presso una vasta gamma di ristoranti. Gli utenti possono registrarsi e cercare ristoranti, visualizzare i loro menu, effettuare prenotazioni e ordini, e ricevere raccomandazioni personalizzate in base alle loro preferenze gastronomiche. I ristoranti, dopo essersi registrati, possono gestire le proprie pagine con informazioni dettagliate, inclusi foto del locale, descrizioni e menu.
 
 ## Funzionalità per gli Utenti
 
@@ -20,7 +20,7 @@ Una volta trovato un ristorante di interesse, gli utenti possono visualizzare la
 
 ### Prenotazioni e Ordini
 
-Gli utenti possono prenotare un tavolo presso il ristorante selezionato scegliendo la data, l'orario e il numero di persone. Possono anche effettuare ordini dal menu del ristorante per il ritiro o la consegna.
+Gli utenti possono prenotare un tavolo presso il ristorante selezionato scegliendo la data, l'orario e il numero di persone. Possono anche effettuare ordini dal menu del ristorante per il ritiro.
 
 ### Homepage Personalizzata
 
@@ -40,7 +40,6 @@ I ristoranti hanno accesso a una pagina dedicata dove possono gestire le informa
 
 I ristoranti ricevono notifiche di nuovi ordini e prenotazioni effettuati dagli utenti e possono gestirli attraverso il sistema.
 
-## Funzionalità Aggiuntive
 
 ### Recensioni e Valutazioni
 
@@ -48,12 +47,9 @@ Gli utenti possono lasciare recensioni e valutazioni sui ristoranti visitati, fo
 
 ### Sistema di Raccomandazioni
 
-Il sistema utilizza algoritmi di raccomandazione per suggerire ai utenti ristoranti in base ai loro gusti e alle loro abitudini di consumo.
+Il sistema utilizza un sistema di raccomandazione per suggerire ai utenti ristoranti in base ai loro gusti e alle loro abitudini.
 
 ### Messaggistica
 
 Gli utenti e i ristoranti possono comunicare tra loro attraverso un sistema di messaggistica integrato per coordinare dettagli relativi a prenotazioni e ordini.
 
-## Conclusioni
-
-Il Sistema di Gestione delle Prenotazioni ai Ristoranti offre una piattaforma intuitiva e efficiente per facilitare l'esperienza di prenotazione e ordinazione sia per gli utenti che per i ristoranti. Con una vasta gamma di funzionalità e un'interfaccia user-friendly, il sistema mira a soddisfare le esigenze degli utenti e migliorare l'efficienza operativa dei ristoranti.

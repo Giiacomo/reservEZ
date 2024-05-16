@@ -1,0 +1,18 @@
+{% extends 'dashboard.html' %}
+
+{% block menu_dashboard %}
+<h2 class="my-3">Informations</h2>
+<ul class="nav flex-column">
+    <li class="nav-item">
+        <a class="nav-link" href="{%url 'user_info'%}">User info</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{%url 'user_address'%}">Address</a>
+    </li>
+</ul>
+<hr class="separation-line">
+
+{% endblock %}
+
+{% block content_dashboard %}
+{% endblock %}

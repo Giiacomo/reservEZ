@@ -1,0 +1,27 @@
+{% extends 'restaurants/dashboard.html' %}
+{% block title %}Menu{% endblock %}
+
+{% block content_dashboard %}
+    <div class="row">
+        <div class="menu-preview col-md-6">
+            <h2>Menu Preview</h2>
+            <ul>
+                {% for section in restaurant.menu.first.sections.all %}
+                    <li>{{ section.sname }}
+                        <ul>
+                            {% for dish in section.dishes.all %}
+                                <li>{{ dish.dname }} - {{ dish.description }} - ${{ dish.price }}</li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <!-- Form for adding sections or dishes goes here -->
+            {% block form %}
+            {% endblock %}
+
+        </div>
+    </div>
+{% endblock %}

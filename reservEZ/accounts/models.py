@@ -1,24 +1,19 @@
-from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
-from django.utils.translation import gettext_lazy as _
-
-class User(models.Model):
-    email = models.EmailField(unique=True)
-    cell_number = models.CharField(max_length=15, unique=True)
-    name = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.email
-        
-
-
+from django.contrib.auth.models import User
 
 class Address(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    address = models.CharField(max_length=255)
+    street = models.CharField(max_length=100)
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    country = models.CharField(max_length=100)
+    postal_code = models.CharField(max_length=20)
 
-class Restaurant(models.Model):
-    name = models.CharField(max_length=100)
-    address = models.CharField(max_length=255)
-    number = models.CharField(max_length=15)
-    email = models.EmailField(unique=True)
+    def __str__(self):
+        return f"{self.street}, {self.city}, {self.country}"
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    address = models.OneToOneField(Address, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return self.user.username

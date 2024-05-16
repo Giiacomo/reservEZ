@@ -1,0 +1,14 @@
+<!-- add_section.html -->
+{% extends 'restaurants/menu.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Add Section{% endblock %}
+
+{% block form %}
+    <h2>Add Section</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-success">Add Section</button>
+    </form>
+{% endblock %}

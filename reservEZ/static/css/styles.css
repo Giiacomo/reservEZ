@@ -1,0 +1,94 @@
+:root {
+    --marroncino: #b0936f;
+    --marrone: #382f24;
+    --chiaro: #ebebeb;
+    --arancione: #ff8d03;
+    --grigio: #292929;
+}
+
+.title-first-half {
+  color: var(--chiaro)
+}
+
+.title-seconda-half {
+  color: var(--arancione)
+}
+
+body {
+    background: #fafafa;
+    color: #333333;
+    
+  }
+  
+  
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--marrone);
+  }
+  
+  ul {
+    margin: 0;
+  }
+  
+  .navbar-bg {
+    position: relative;
+    background-color: var(--marroncino);
+  }
+  
+  .site-header .navbar-nav .nav-link {
+    color: #ffffff;
+  }
+  
+  .site-header .navbar-nav .nav-link:hover {
+    color: #ffffff;
+  }
+  
+  .site-header .navbar-nav .nav-link.active {
+    font-weight: 500;
+  }
+  
+
+  .myform {
+    width: 70%; /* Set the width to 70% of the page */
+    margin: 0 auto; /* Center the form horizontally */
+    padding: 20px; /* Add some padding for spacing */
+    border: 1px solid #ccc; /* Add a border for visibility */
+    border-radius: 8px; /* Optional: Add some border-radius for rounded corners */
+}
+
+  .button-as-link {
+    border:none; 
+    background-color:transparent;
+  }
+  
+  .button-as-link:focus {
+    outline: none;
+}
+
+.custom-sidebar {
+  height: 100vh;
+  box-shadow: 2px 0 2px rgba(0, 0, 0, 0.1); /* Adjust the values as needed */
+}
+
+.separation-line {
+  height: 1px;
+  width: 80%; /* Adjust as needed */
+  background-color: rgba(0, 0, 0, 0.1); /* Same style as the border */
+  margin-left: 10px; /* Center the separation line */
+  position: absolute;
+}
+
+#menu-sections::-webkit-scrollbar {
+  width: 10px;
+}
+
+#menu-sections::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+#menu-sections::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+#menu-sections::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

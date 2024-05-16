@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3 custom-sidebar sidebar">
+            {% block menu_dashboard %}
+            {% endblock %}
+        </div>
+
+        <div class="col-md-9 content my-3">
+            {% block content_dashboard %}
+            {% endblock %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

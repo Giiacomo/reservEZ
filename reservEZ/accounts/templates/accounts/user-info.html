@@ -1,0 +1,12 @@
+{% extends 'accounts/dashboard.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content_dashboard %}
+<h2 class="my-3">User Information</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit" class="btn btn-success">Update info</button>
+</form>
+{% endblock %}
