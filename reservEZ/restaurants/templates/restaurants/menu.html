@@ -2,26 +2,104 @@
 {% block title %}Menu{% endblock %}
 
 {% block content_dashboard %}
-    <div class="row">
-        <div class="menu-preview col-md-6">
-            <h2>Menu Preview</h2>
-            <ul>
-                {% for section in restaurant.menu.first.sections.all %}
-                    <li>{{ section.sname }}
-                        <ul>
-                            {% for dish in section.dishes.all %}
-                                <li>{{ dish.dname }} - {{ dish.description }} - ${{ dish.price }}</li>
-                            {% endfor %}
-                        </ul>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-        <div class="col-md-6">
-            <!-- Form for adding sections or dishes goes here -->
-            {% block form %}
-            {% endblock %}
 
-        </div>
+<style>
+    .custom-btn {
+        border-radius: 20px;
+        padding: 5px 10px;
+        margin-top: 5px;
+    }
+    .custom-btn-primary {
+        background-color: var(--blu);
+        border-color: var(--blu);
+        color: white;
+    }
+    .custom-btn-primary:hover {
+        background-color: #0056b3; /* Darker shade for hover */
+        border-color: #0056b3;
+    }
+    .custom-btn-danger {
+        background-color: var(--red);
+        border-color: var(--red);
+        color: white;
+    }
+    .custom-btn-danger:hover {
+        background-color: #c82333; /* Darker shade for hover */
+        border-color: #bd2130;
+    }
+    .btn-container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    .btn-container > form,
+    .btn-container > a {
+        margin-left: 5px;
+    }
+    @media (max-width: 768px) {
+        .btn-container {
+            flex-direction: row;
+            justify-content: flex-start;
+        }
+        .btn-container > form,
+        .btn-container > a {
+            margin-left: 5px;
+            margin-top: 0;
+        }
+    }
+</style>
+
+<div class="row">
+    <div class="menu-preview col-md-6">
+        <h2>Menu Preview</h2>
+        <ul class="list-group">
+            {% for section in restaurant.menu.first.sections.all %}
+                <li class="list-group-item">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+                        <span>{{ section.sname }}</span>
+                        <div class="btn-container">
+                            <form action="{% url 'restaurants:modify_section' section.pk %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn custom-btn custom-btn-primary btn-sm">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </form>
+                            <form action="{% url 'restaurants:delete_section' section.pk %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn custom-btn custom-btn-danger btn-sm">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <ul class="list-group mt-2">
+                        {% for dish in section.dishes.all %}
+                            <li class="list-group-item">
+                                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+                                    <span>{{ dish.dname }} - {{ dish.description }} - ${{ dish.price }}</span>
+                                    <div class="btn-container">
+                                        <a href="{% url 'restaurants:modify_dish' dish.pk %}" class="btn custom-btn custom-btn-primary btn-sm">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form action="{% url 'restaurants:delete_dish' dish.pk %}" method="post">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn custom-btn custom-btn-danger btn-sm">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
     </div>
+    <div class="col-md-6">
+        <!-- Form for adding sections or dishes goes here -->
+        {% block form %}
+        {% endblock %}
+    </div>
+</div>
 {% endblock %}

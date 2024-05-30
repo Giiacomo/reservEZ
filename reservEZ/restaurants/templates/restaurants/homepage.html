@@ -15,38 +15,29 @@ Home
         </div>
     </div>
     <div class="row">
-        {% if user_city_restaurants %}
-        <div class="col-md-12 mb-4">
-            <h3>Restaurants in {{ request.user.profile.city }}</h3>
-        </div>
-        {% for restaurant in user_city_restaurants %}
+        {% for restaurant_data in restaurant_data_list %}
         <div class="col-md-4 mb-4">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">{{ restaurant.name }}</h5>
-                    <p class="card-text">{{ restaurant.description }}</p>
-                    <p class="card-text">Address: {{ restaurant.address }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="card-title">
+                            <a href="{% url 'restaurants:restaurant_page' restaurant_data.restaurant.id %}" class="restaurant-link">{{ restaurant_data.restaurant.name }}</a>
+                        </h5>
+                        <div>
+                            {% if restaurant_data.isOpen %}
+                                <span class="status-badge badge badge-success">Open</span>
+                            {% else %}
+                                <span class="status-badge badge badge-danger">Closed</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <p class="card-text">{{ restaurant_data.restaurant.description }}</p>
+                    <p class="card-text">Address: {{ restaurant_data.restaurant.address }}</p>
                 </div>
             </div>
         </div>
         {% endfor %}
-        {% endif %}
-        {% if other_restaurants %}
-        <div class="col-md-12 mb-4">
-            <h3>Restaurants outside {{ request.user.profile.city }}</h3>
-        </div>
-        {% for restaurant in other_restaurants %}
-        <div class="col-md-4 mb-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">{{ restaurant.name }}</h5>
-                    <p class="card-text">{{ restaurant.description }}</p>
-                    <p class="card-text">Address: {{ restaurant.address }}</p>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-        {% endif %}
+        
     </div>
 </div>
 {% endblock %}

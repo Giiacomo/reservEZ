@@ -2,25 +2,35 @@
 {% load crispy_forms_tags %}
 
 {% block content_dashboard %}
-    <div class="row">
-        <div class="opening-hours col-md-6">
-            <h2>Opening Hours</h2>
-            <ul>
-                {% for weekday, opening_hour in opening_hours.items %}
-                    {% if opening_hour %}
-                        <li>{{ opening_hour.get_weekday_display }} : {{ opening_hour.opening_time|time:'H:i' }} - {{ opening_hour.closing_time|time:'H:i' }}</li>
-                    {% endif %}
-                {% endfor %}
-            </ul>
-        </div>
-        <div class="col-md-6">
-            <!-- Form for adding sections or dishes goes here -->
-            <form method="post">
-                {% csrf_token %}
-                {{ form|crispy }}
-                <button type="submit" class="btn btn-success">Set</button>
-            </form>
-
-        </div>
+<div class="row">
+    <div class="opening-hours col-md-6">
+        <h2>Opening Hours</h2>
+        <ul>
+            {% for weekday, opening_hour in opening_hours.items %}
+                {% if opening_hour %}
+                    <li>
+                        {{ opening_hour.get_weekday_display }} : 
+                        {{ opening_hour.opening_time|time:'H:i' }} - 
+                        {{ opening_hour.closing_time|time:'H:i' }}
+                        <form method="post" action="{% url 'restaurants:delete_opening_hour' opening_hour.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn custom-btn custom-btn-danger btn-sm">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
     </div>
+    <div class="col-md-6">
+        <form method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn custom-btn custom-btn-primary btn-sm">
+                <i class="fas fa-check"></i> Set
+            </button>
+        </form>
+    </div>
+</div>
 {% endblock %}

@@ -7,3 +7,10 @@ WEEKDAYS = (
     (5, 'Saturday'),
     (6, 'Sunday'),
 )
+
+STATUS_CHOICES = [
+        ('NA', 'Not Accepted'),
+        ('A', 'Accepted'),
+        ('R', 'Ready'),
+        ('T', 'Retired'),
+    ]

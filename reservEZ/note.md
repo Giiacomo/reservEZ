@@ -1,0 +1,3 @@
+# TODO
+- Caricare immagini
+- Decorator 

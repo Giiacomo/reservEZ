@@ -20,8 +20,10 @@ def register(request):
     return render(request, 'accounts/registration.html', ctx)
 
 @login_required
-def profile(req):
-    return render(req, 'accounts/profile.html')
+def user_dashboard(request):
+    user_profile = request.user.profile
+    return render(request, 'accounts/dashboard.html', {'user_profile': user_profile})
+
 
 @login_required
 def user_info(request):
@@ -30,7 +32,7 @@ def user_info(request):
         form = UserInfoForm(request.POST, instance=existing_user)
         if form.is_valid():
             form.save()
-            return redirect('user_info') 
+            return redirect('accounts:info') 
     else:
         form = UserInfoForm(instance=existing_user)
     return render(request, 'accounts/user-info.html', {'form': form})
@@ -50,7 +52,7 @@ def user_address(request):
             user_profile.address = address_instance
             user_profile.save()
 
-            return redirect('user_address')  # Redirect to the same page after successful update
+            return redirect('accounts:address')  # Redirect to the same page after successful update
     else:
         form = AddressForm(existing_address=existing_address)
     return render(request, 'accounts/user-address.html', {'form': form})

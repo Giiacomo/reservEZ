@@ -1,8 +1,8 @@
 :root {
-    --marroncino: #b0936f;
-    --marrone: #382f24;
+    --blu: rgb(46, 70, 90);
+    --red: rgb(190, 60, 60);
     --chiaro: #ebebeb;
-    --arancione: #ff8d03;
+    --azzurro: #16d4d4;
     --grigio: #292929;
 }
 
@@ -11,11 +11,11 @@
 }
 
 .title-seconda-half {
-  color: var(--arancione)
+  color: var(--red)
 }
 
 body {
-    background: #fafafa;
+    background: #ffffff;
     color: #333333;
     
   }
@@ -31,13 +31,18 @@ body {
   
   .navbar-bg {
     position: relative;
-    background-color: var(--marroncino);
+    background-color: var(--blu);
   }
   
+  .navbar-nav .nav-item:not(:last-child) {
+    margin-right: 15px; /* Adjust the spacing between the nav items */
+}
+
   .site-header .navbar-nav .nav-link {
     color: #ffffff;
   }
-  
+
+
   .site-header .navbar-nav .nav-link:hover {
     color: #ffffff;
   }
@@ -45,50 +50,121 @@ body {
   .site-header .navbar-nav .nav-link.active {
     font-weight: 500;
   }
-  
 
-  .myform {
-    width: 70%; /* Set the width to 70% of the page */
-    margin: 0 auto; /* Center the form horizontally */
-    padding: 20px; /* Add some padding for spacing */
-    border: 1px solid #ccc; /* Add a border for visibility */
-    border-radius: 8px; /* Optional: Add some border-radius for rounded corners */
+
+.myform {
+  width: 90%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
 }
 
-  .button-as-link {
-    border:none; 
-    background-color:transparent;
-  }
-  
-  .button-as-link:focus {
-    outline: none;
+.button-as-link {
+  border:none; 
+  background-color:transparent;
+}
+
+.button-as-link:focus {
+  outline: none;
 }
 
 .custom-sidebar {
-  height: 100vh;
-  box-shadow: 2px 0 2px rgba(0, 0, 0, 0.1); /* Adjust the values as needed */
+  box-shadow: 2px 0 2px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  height: auto; /* Set default height */
+}
+
+@media (min-width: 768px) {
+  .custom-sidebar {
+      height: 100vh; /* Set height to 100vh for screen width 768px or larger */
+  }
 }
 
 .separation-line {
   height: 1px;
-  width: 80%; /* Adjust as needed */
-  background-color: rgba(0, 0, 0, 0.1); /* Same style as the border */
-  margin-left: 10px; /* Center the separation line */
-  position: absolute;
+  width: 80%;
+  background-color: var(--blu);
+  opacity: 0.3;
+  margin: 20px auto;
 }
 
-#menu-sections::-webkit-scrollbar {
-  width: 10px;
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
 }
 
-#menu-sections::-webkit-scrollbar-track {
-  background: #f1f1f1;
+.table th, .table td {
+  border: 1px solid #ddd;
+  padding: 8px;
 }
 
-#menu-sections::-webkit-scrollbar-thumb {
-  background: #888;
+.table th {
+  background-color: var(--blu);
+  color: white;
 }
 
-#menu-sections::-webkit-scrollbar-thumb:hover {
-  background: #555;
+.nav-section {
+    color: black;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.nav-section h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    color: black;
+}
+
+.nav-section ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.nav-section .nav-item {
+    margin-bottom: 8px; /* Adjust as needed */
+}
+
+.nav-section .nav-link {
+    color: black;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.nav-section .nav-link:hover {
+    color: var(--azzurro);
+}
+
+/* Remove margin from the first child of nav-item */
+.nav-section .nav-item {
+  margin-left: 0;
+  padding-left: 0;
+}
+
+
+
+@media (max-width: 768px) {
+  .nav.flex-column {
+      flex-direction: row;
+      overflow-x: auto;
+  }
+
+  .nav-item {
+      margin-right: 10px;
+  }
+
+  .myform {
+      width: 90%;
+  }
+
+  .table th, .table td {
+      padding: 10px;
+  }
 }

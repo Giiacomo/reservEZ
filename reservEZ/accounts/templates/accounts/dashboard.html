@@ -1,18 +1,43 @@
 {% extends 'dashboard.html' %}
 
 {% block menu_dashboard %}
-<h2 class="my-3">Informations</h2>
-<ul class="nav flex-column">
-    <li class="nav-item">
-        <a class="nav-link" href="{%url 'user_info'%}">User info</a>
+<div class="nav-section">
+    <h3>Info</h3>
+    <ul class="nav flex-column">
+        <li class="nav-item">
+        <a class="nav-link" href="{%url 'accounts:dashboard'%}">User Dashboard</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="{%url 'user_address'%}">Address</a>
+        <a class="nav-link" href="{%url 'accounts:info'%}">User info</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{%url 'accounts:address'%}">Address</a>
     </li>
 </ul>
 <hr class="separation-line">
-
+</div>
 {% endblock %}
 
 {% block content_dashboard %}
+<h3>User Information</h3>
+<table class="table">
+    <tr>
+        <th>Username</th>
+        <td>{{ user_profile.user.username }}</td>
+    </tr>
+    <tr>
+        <th>Email</th>
+        <td>{{ user_profile.user.email }}</td>
+    </tr>
+    <tr>
+        <th>Address</th>
+        <td>
+            {% if user_profile.address %}
+                {{ user_profile.address.street }}, {{ user_profile.address.city }}, {{ user_profile.address.state }}, {{ user_profile.address.country }} - {{ user_profile.address.postal_code }}
+            {% else %}
+                No address set
+            {% endif %}
+        </td>
+    </tr>
+</table>
 {% endblock %}

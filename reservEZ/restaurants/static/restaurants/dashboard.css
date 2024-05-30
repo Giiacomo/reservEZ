@@ -1,0 +1,69 @@
+#menu-sections {
+    height: 500px;
+    overflow-y: auto;
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: #999 transparent; /* For Firefox */
+  }
+  
+  /* For Chrome, Safari, and Opera */
+  #menu-sections::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  #menu-sections::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  #menu-sections::-webkit-scrollbar-thumb {
+    background-color: #999;
+    border-radius: 4px;
+    border: 2px solid transparent;
+  }
+  
+  #menu-sections::-webkit-scrollbar-thumb:hover {
+    background-color: #888;
+  }
+  
+  .custom-btn {
+    border-radius: 20px;
+    padding: 5px 10px;
+    margin-top: 5px;
+}
+.custom-btn-primary {
+    background-color: var(--blu);
+    border-color: var(--blu);
+    color: white;
+}
+.custom-btn-primary:hover {
+    background-color: #0056b3; /* Darker shade for hover */
+    border-color: #0056b3;
+}
+.custom-btn-danger {
+    background-color: var(--red);
+    border-color: var(--red);
+    color: white;
+}
+.custom-btn-danger:hover {
+    background-color: #c82333; /* Darker shade for hover */
+    border-color: #bd2130;
+}
+.btn-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.btn-container > form,
+.btn-container > a {
+    margin-left: 5px;
+}
+@media (max-width: 768px) {
+    .btn-container {
+        flex-direction: row;
+        justify-content: flex-start;
+    }
+    .btn-container > form,
+    .btn-container > a {
+        margin-left: 5px;
+        margin-top: 0;
+    }
+}

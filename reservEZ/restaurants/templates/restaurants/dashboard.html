@@ -1,28 +1,146 @@
 {% extends 'dashboard.html' %}
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href=" {% static '/restaurants/dashboard.css' %} ">
+
 
 {% block menu_dashboard %}
-<h2 class="my-3">Menu</h2>
-<ul class="nav flex-column">
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'add_section' %}">Sections</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'add_dish' %}">Dishes</a>
-    </li>
-</ul>
+
+<style>
+    .custom-btn {
+        border-radius: 20px;
+        padding: 5px 10px;
+        margin-top: 5px;
+    }
+    .custom-btn-primary {
+        background-color: var(--blu);
+        border-color: var(--blu);
+        color: white;
+    }
+    .custom-btn-primary:hover {
+        background-color: #0056b3; /* Darker shade for hover */
+        border-color: #0056b3;
+    }
+    .custom-btn-danger {
+        background-color: var(--red);
+        border-color: var(--red);
+        color: white;
+    }
+    .custom-btn-danger:hover {
+        background-color: #c82333; /* Darker shade for hover */
+        border-color: #bd2130;
+    }
+    .btn-container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    .btn-container > form,
+    .btn-container > a {
+        margin-left: 5px;
+    }
+    @media (max-width: 768px) {
+        .btn-container {
+            flex-direction: row;
+            justify-content: flex-start;
+        }
+        .btn-container > form,
+        .btn-container > a {
+            margin-left: 5px;
+            margin-top: 0;
+        }
+    }
+</style>
+
+<div class="nav-section">
+    <h3 class="my-3">Menu</h3>
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'restaurants:add_section' %}">Sections</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'restaurants:add_dish' %}">Dishes</a>
+        </li>
+    </ul>
+</div>
 <hr class="separation-line">
 
-<h2 class="mt-5">Info</h2>
-<ul class="nav flex-column">
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'set_address' %}">Indirizzo</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'set_opening_hours' %}">Orari</a>
-    </li>
-</ul>
+<div class="nav-section">
+    <h3>Reservations & Orders</h3>
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'restaurants:all_reservations' %}">All Reservations</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">All Orders</a> <!-- Add the URL to the orders view -->
+        </li>
+    </ul>
+</div>
 <hr class="separation-line">
+
+<div class="nav-section">
+    <h3>Info</h3>
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'restaurants:set_address' %}">Address</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'restaurants:set_opening_hours' %}">Opening Hours</a>
+        </li>
+    </ul>
+</div>
 {% endblock %}
 
 {% block content_dashboard %}
+<h3>Restaurant Page Status</h3>
+{% if incomplete_fields %}
+<p>The following information is missing or incomplete. Please update them to complete your restaurant profile and have your custom page.</p>
+<ul>
+    {% for field in incomplete_fields %}
+        <li class="text-danger">{{ field }}</li>
+    {% endfor %}
+</ul>
+{% else %}
+<p class="text-success">Your restaurant profile is complete.</p>
+{% endif %}
+
+<h2 class="my-5">Restaurant Summary</h2>
+<table class="table">
+    <tr>
+        <th>Name</th>
+        <td>{{ restaurant.name }}</td>
+    </tr>
+    <tr>
+        <th>Description</th>
+        <td>{{ restaurant.description }}</td>
+    </tr>
+    <tr>
+        <th>Owner</th>
+        <td>{{ restaurant.owner.username }}</td>
+    </tr>
+    <tr>
+        <th>Address</th>
+        <td>
+            {% if restaurant.address %}
+                {{ restaurant.address.street }}, {{ restaurant.address.city }}, {{ restaurant.address.state }}, {{ restaurant.address.country }}
+            {% else %}
+                No address set
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <th>Opening Hours</th>
+        <td>
+            {% if restaurant.opening_hours.exists %}
+                <ul>
+                {% for hours in restaurant.opening_hours.all %}
+                    <li>{{ hours.get_weekday_display }}: {{ hours.opening_time }} - {{ hours.closing_time }}</li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                No opening hours set
+            {% endif %}
+        </td>
+    </tr>
+</table>
 {% endblock %}

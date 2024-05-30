@@ -1,7 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-from .utils.constants import WEEKDAYS
+from .utils.constants import WEEKDAYS, STATUS_CHOICES
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 
 class OpeningHours(models.Model):
     restaurant = models.ForeignKey('Restaurant', on_delete=models.CASCADE, related_name='opening_hours')
@@ -11,14 +13,6 @@ class OpeningHours(models.Model):
 
     class Meta:
         unique_together = ('restaurant', 'weekday')
-
-    def clean(self):
-        if self.opening_time >= self.closing_time:
-            raise ValidationError("Closing time must be after opening time.")
-
-    def save(self, *args, **kwargs):
-        self.full_clean()
-        return super(OpeningHours, self).save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.get_weekday_display()}: {self.opening_time} - {self.closing_time}"
@@ -94,3 +88,44 @@ class Dish(models.Model):
 
     def __str__(self):
         return self.dname
+
+
+
+class Reservation(models.Model):
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='reservations')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reservations')
+    date = models.DateField()
+    time = models.TimeField()
+    number_of_people = models.PositiveIntegerField()
+
+    class Meta:
+        unique_together = ('restaurant', 'user', 'date')
+
+    def __str__(self):
+        return f"Reservation for {self.user.username} at {self.restaurant.name} on {self.date} at {self.time} for {self.number_of_people} people"
+
+class Order(models.Model):
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='orders')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
+    date = models.DateField(auto_now_add=True)
+    status = models.CharField(max_length=2, choices=STATUS_CHOICES, default='NA')
+    total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+    def __str__(self):
+        return f"Order by {self.user.username} at {self.restaurant.name} on {self.date}"
+
+class ActiveOrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='active_items')
+    dish = models.ForeignKey(Dish, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.quantity}x {self.dish.dname} in order {self.order}"
+
+
+@receiver(post_save, sender=ActiveOrderItem)
+@receiver(post_delete, sender=ActiveOrderItem)
+def update_order_total_price(sender, instance, **kwargs):
+    order = instance.order
+    order.total_price = sum(item.dish.price * item.quantity for item in order.active_items.all())
+    order.save()

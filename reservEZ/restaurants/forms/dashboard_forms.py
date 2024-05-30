@@ -4,6 +4,10 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Div, Submit
 from ..models import Restaurant, Address, MenuSection, Dish, OpeningHours
 from ..utils.constants import WEEKDAYS
+from django.utils import timezone
+from django.core.exceptions import ValidationError
+import datetime
+
 
 class OpeningHoursForm(forms.ModelForm):
     class Meta:
@@ -13,8 +17,8 @@ class OpeningHoursForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['weekday'].widget = forms.Select(choices=WEEKDAYS)
-        self.fields['opening_time'].widget = forms.TimeInput(format='%H:%M')
-        self.fields['closing_time'].widget = forms.TimeInput(format='%H:%M')
+        self.fields['opening_time']
+        self.fields['closing_time']
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Fieldset(
@@ -28,6 +32,35 @@ class OpeningHoursForm(forms.ModelForm):
             ),
             Submit('submit', 'Submit'),
         )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        opening_time = cleaned_data.get('opening_time')
+        closing_time = cleaned_data.get('closing_time')
+
+        if opening_time and closing_time:
+            if not self.is_valid_time_format(opening_time):
+                raise ValidationError("Invalid date format for opening time, use HH:MM.", code='invalid_opening_time')
+            if not self.is_valid_time_format(closing_time):
+                raise ValidationError("Invalid date format for closing time, use HH:MM.", code='invalid_closing_time')
+            if opening_time >= closing_time:
+                raise ValidationError("Closing time must be after opening time.", code='invalid_time_range')
+
+        # Handle the case where either opening_time or closing_time is None
+        if opening_time is None and closing_time is not None:
+            raise ValidationError("Opening time is required.", code='missing_opening_time')
+        elif opening_time is not None and closing_time is None:
+            raise ValidationError("Closing time is required.", code='missing_closing_time')
+
+        return cleaned_data
+
+    def is_valid_time_format(self, time_str):
+        try:
+            time_str = time_str.strftime('%H:%M') if isinstance(time_str, datetime.time) else time_str
+            timezone.datetime.strptime(time_str, '%H:%M')
+            return True
+        except ValueError:
+            return False
 
 class AddressForm(forms.ModelForm):
     class Meta:
@@ -79,22 +112,35 @@ class RestaurantForm(forms.ModelForm):
 
 
 class MenuSectionForm(forms.ModelForm):
-    class Meta:
-        model = MenuSection
-        fields = ['sname']
-
     def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance')
         super(MenuSectionForm, self).__init__(*args, **kwargs)
+        
+        # If modifying an existing section, populate the form fields with its data
+        if instance and instance.pk:
+            self.fields['sname'].initial = instance.sname
+
         self.helper = FormHelper()
         self.helper.layout = Layout(
             'sname',
             Submit('submit', 'Submit', css_class='btn-success')
         )
+
+    class Meta:
+        model = MenuSection
+        fields = ['sname']
+
+
 class DishForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         restaurant = kwargs.pop('restaurant', None)
+        instance = kwargs.get('instance')
         super(DishForm, self).__init__(*args, **kwargs)
-        if restaurant:
+        
+        # If modifying an existing dish, set the queryset for the section field based on the restaurant of the dish
+        if instance and instance.pk:
+            self.fields['section'].queryset = MenuSection.objects.filter(menu__restaurant=instance.section.menu.restaurant)
+        elif restaurant:
             self.fields['section'].queryset = MenuSection.objects.filter(menu__restaurant=restaurant)
 
         self.helper = FormHelper()

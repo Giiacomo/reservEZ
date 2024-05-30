@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+Make a Reservation
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h2>Make a Reservation at {{ restaurant.name }}</h2>
+            <div class="opening-hours mb-4">
+                <h4>Opening Hours</h4>
+                <ul>
+                    {% for oh in opening_hours %}
+                        <li>{{ oh.get_weekday_display }}: {{ oh.opening_time }} - {{ oh.closing_time }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                {% crispy form %}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

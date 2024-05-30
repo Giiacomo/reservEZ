@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from ..forms.dashboard_forms import RestaurantForm, AddressForm, DishForm, MenuSectionForm, OpeningHoursForm
-from ..models import Menu, Restaurant, OpeningHours
+from ..models import Menu, Restaurant, OpeningHours, MenuSection, Dish, Reservation
 from django.contrib.auth.decorators import login_required
 from ..utils.decorators import user_has_restaurant
 from ..utils.constants import WEEKDAYS
+from ..utils.functions import get_incomplete_fields
 
 @login_required
 def create_restaurant(request):
@@ -23,7 +24,7 @@ def create_restaurant(request):
             menu = Menu(restaurant=restaurant)
             menu.save()
 
-            return redirect('dashboard')  # Redirect to restaurant detail view
+            return redirect('restaurants:dashboard')  # Redirect to restaurant detail view
     else:
         address_form = AddressForm()
         restaurant_form = RestaurantForm(user=request.user)
@@ -35,8 +36,14 @@ def create_restaurant(request):
 @login_required
 @user_has_restaurant
 def dashboard(request):
-    restaurants = Restaurant.objects.filter(owner=request.user).first()
-    return render(request, 'restaurants/dashboard.html', {'restaurants': restaurants})
+    restaurant = Restaurant.objects.filter(owner=request.user).first()
+    incomplete_fields = get_incomplete_fields(restaurant)
+
+    context = {
+        'restaurant': restaurant,
+        'incomplete_fields': incomplete_fields,
+    }
+    return render(request, 'restaurants/dashboard.html', context)
 
 @login_required
 @user_has_restaurant
@@ -56,6 +63,31 @@ def add_section(request):
 
 @login_required
 @user_has_restaurant
+def modify_section(request, section_id):
+    restaurant = Restaurant.objects.filter(owner=request.user).first()
+    section = get_object_or_404(MenuSection, pk=section_id)
+    if request.method == 'POST':
+        form = MenuSectionForm(request.POST, instance=section)
+        if form.is_valid():
+            form.save()
+            return redirect('restaurants:add_section') 
+    else:
+        form = MenuSectionForm(instance=section)
+    return render(request, 'restaurants/menu-section.html', {'form': form, 'section': section, 'restaurant': restaurant})
+
+@login_required
+@user_has_restaurant
+def delete_section(request, section_id):
+    restaurant = Restaurant.objects.filter(owner=request.user).first()
+    section = get_object_or_404(MenuSection, pk=section_id)
+    if request.method == 'POST':
+        section.delete()
+        return redirect('restaurants:add_section') 
+    return render(request, 'restaurants/menu-section.html', {'section': section, 'restaurant': restaurant})
+
+
+@login_required
+@user_has_restaurant
 def add_dish(request):
     restaurant = Restaurant.objects.filter(owner=request.user).first()
     menu = restaurant.menu.first()
@@ -69,6 +101,28 @@ def add_dish(request):
     else:
         form = DishForm(restaurant=restaurant)
     return render(request, 'restaurants/menu-dishes.html', {'form': form, 'restaurant': restaurant})
+
+@login_required
+@user_has_restaurant
+def modify_dish(request, dish_id):
+    restaurant = Restaurant.objects.filter(owner=request.user).first()
+    dish = get_object_or_404(Dish, pk=dish_id)
+    if request.method == 'POST':
+        form = DishForm(request.POST, instance=dish)
+        if form.is_valid():
+            form.save()
+            return redirect('restaurants:add_dish')
+    else:
+        form = DishForm(instance=dish)
+    return render(request, 'restaurants/menu-dishes.html', {'form': form, 'restaurant': restaurant,'dish': dish})
+
+def delete_dish(request, dish_id):
+    restaurant = Restaurant.objects.filter(owner=request.user).first()
+    dish = get_object_or_404(Dish, pk=dish_id)
+    if request.method == 'POST':
+        dish.delete()
+        return redirect('restaurants:add_dish')
+    return render(request, 'restaurants/menu-dishes.html', {'dish': dish, 'restaurant': restaurant})
 
 @login_required
 @user_has_restaurant
@@ -110,7 +164,7 @@ def set_opening_hours(request):
                 opening_hours_instance = form.save(commit=False)
                 opening_hours_instance.restaurant = restaurant
                 opening_hours_instance.save()
-            return redirect('set_opening_hours')
+            return redirect('restaurants:set_opening_hours')
     else:
         form = OpeningHoursForm()
 
@@ -120,3 +174,21 @@ def set_opening_hours(request):
         organized_opening_hours[weekday] = opening_hour
 
     return render(request, 'restaurants/openinghours.html', {'form': form, 'opening_hours': organized_opening_hours})
+
+@login_required
+@user_has_restaurant
+def delete_opening_hour(request, pk):
+    restaurant = Restaurant.objects.filter(owner=request.user).first()
+    opening_hour = get_object_or_404(OpeningHours, pk=pk, restaurant=restaurant)
+
+    if request.method == 'POST':
+        opening_hour.delete()
+        return redirect('restaurants:set_opening_hours')  # or any other view you want to redirect to
+
+    return render(request, 'restaurants/openinghours.html', {'restaurant': restaurant})
+
+@user_has_restaurant
+@login_required
+def view_all_reservations(request):
+    reservations = Reservation.objects.filter(restaurant__owner=request.user).order_by('date', 'time')
+    return render(request, 'restaurants/restaurant-reservation.html', {'reservations': reservations})
