@@ -1,5 +1,5 @@
 from django.urls import path
-from .views.dashboard_views import create_restaurant, dashboard, add_dish, delete_dish, delete_section, modify_dish, delete_dish, add_section, modify_section, delete_section, delete_opening_hour, set_address, set_opening_hours, delete_opening_hour, view_all_reservations
+from .views.dashboard_views import create_restaurant, dashboard,  manage_orders, add_dish, delete_dish, delete_section, modify_dish, delete_dish, add_section, modify_section, delete_section, delete_opening_hour, set_address, set_opening_hours, delete_opening_hour, view_all_reservations
 from .views.restaurant_views import restaurant_list, restaurant_page, delete_from_order, add_to_order, submit_order, make_reservation, delete_reservation, user_homepage
 
 from django.conf import settings
@@ -26,6 +26,7 @@ urlpatterns = [
     path('page/<int:restaurant_id>/add-to-order/<int:dish_id>/', add_to_order, name='add_to_order'),
     path('page/<int:restaurant_id>/submit-order/', submit_order, name='submit_order'),
     path('page/<int:restaurant_id>/delete-from-order/<int:item_id>/', delete_from_order, name='delete_from_order'),
+    path('manage-orders/', manage_orders, name='manage_orders'), 
     path('reservations/', view_all_reservations, name='all_reservations'),
     path('homepage/', user_homepage, name='user_homepage')
 ]

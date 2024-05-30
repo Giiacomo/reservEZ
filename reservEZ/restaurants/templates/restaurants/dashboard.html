@@ -3,9 +3,7 @@
 
 <link rel="stylesheet" type="text/css" href=" {% static '/restaurants/dashboard.css' %} ">
 
-
 {% block menu_dashboard %}
-
 <style>
     .custom-btn {
         border-radius: 20px;
@@ -72,7 +70,7 @@
             <a class="nav-link" href="{% url 'restaurants:all_reservations' %}">All Reservations</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">All Orders</a> <!-- Add the URL to the orders view -->
+            <a class="nav-link" href="{% url 'restaurants:manage_orders' %}">All Orders</a>
         </li>
     </ul>
 </div>

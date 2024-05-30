@@ -56,7 +56,7 @@
             {% for section in restaurant.menu.first.sections.all %}
                 <li class="list-group-item">
                     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
-                        <span>{{ section.sname }}</span>
+                        <span><b>{{ section.sname }}</b></span>
                         <div class="btn-container">
                             <form action="{% url 'restaurants:modify_section' section.pk %}" method="post">
                                 {% csrf_token %}

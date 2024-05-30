@@ -11,7 +11,7 @@ def add_to_order(request, restaurant_id, dish_id):
     if request.method == 'POST':
         quantity = int(request.POST.get('quantity', 1))  # Get the quantity from the form
         dish = get_object_or_404(Dish, pk=dish_id)
-        order, _ = Order.objects.get_or_create(restaurant_id=restaurant_id, user=request.user, status='NA')
+        order, _ = Order.objects.get_or_create(restaurant_id=restaurant_id, user=request.user, status='NS')
 
         # Check if the dish is already in the order, update the quantity
         active_item = ActiveOrderItem.objects.filter(order=order, dish=dish).first()
@@ -29,7 +29,6 @@ def add_to_order(request, restaurant_id, dish_id):
 
 @login_required
 def delete_from_order(request, restaurant_id, item_id):
-    # Retrieve the ActiveOrderItem object
     item = get_object_or_404(ActiveOrderItem, pk=item_id)
 
     if item.order.restaurant_id == restaurant_id and item.order.user == request.user:
@@ -37,50 +36,35 @@ def delete_from_order(request, restaurant_id, item_id):
 
     return redirect('restaurants:restaurant_page', restaurant_id=restaurant_id)
 
-
 @login_required
-def restaurant_detail(request, restaurant_id):
-    restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
-    menu_sections = MenuSection.objects.filter(menu__restaurant=restaurant)
-    user_reservations = Reservation.objects.filter(user=request.user, restaurant=restaurant)
-
-    return render(request, 'restaurants/restaurant-page.html', {'restaurant': restaurant, 'menu_sections': menu_sections, 'user_reservations': user_reservations})
-
-@login_required
-def submit_order(request):
-    if request.method == 'POST':
-        restaurant_id = request.POST.get('restaurant_id')
-        restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
-        user = request.user
-
-        # Get the active order for the user at the restaurant
-        order = Order.objects.filter(restaurant=restaurant, user=user, status='NA').first()
-
-        # Update order status and save
-        if order:
-            order.status = 'A'  # Assuming 'A' stands for 'Accepted'
-            order.save()
-
-    return redirect('restaurants/restaurant-page.html', restaurant_id)
+def submit_order(request, restaurant_id):
+    try:
+        order = Order.objects.get(restaurant_id=restaurant_id, user=request.user, status='NS')
+        order.status = 'AW'  # Set status to 'AW' (Awaiting Acceptance)
+        order.save()
+        return redirect('restaurants:restaurant_page', restaurant_id=restaurant_id)
+    except Order.DoesNotExist:
+        # Handle the case where there is no active order or the order is already submitted
+        return redirect('restaurants:restaurant_page', restaurant_id=restaurant_id)
 
 def restaurant_list(request):
     restaurants = Restaurant.objects.all()
     return render(request, 'restaurants/restaurant-list.html', {'restaurants': restaurants, 'title': 'List of restaurants:'})
 
 @check_restaurant_complete
+@login_required
 def restaurant_page(request, restaurant_id):
     restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
     menu_sections = MenuSection.objects.filter(menu__restaurant=restaurant)
     user_reservations = Reservation.objects.filter(restaurant=restaurant, user=request.user)
     
-    # Get the active order for the user at the restaurant
-    active_order = Order.objects.filter(restaurant=restaurant, user=request.user, status='NA').first()
+    order = Order.objects.filter(restaurant=restaurant, user=request.user).exclude(status='T').first()
 
     context = {
         'restaurant': restaurant,
         'menu_sections': menu_sections,
         'user_reservations': user_reservations,
-        'active_order': active_order,  # Pass the active order to the template
+        'order': order,  # Pass the order to the template
     }
     return render(request, 'restaurants/restaurant-page.html', context)
 

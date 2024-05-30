@@ -2,9 +2,9 @@
     --blu: rgb(46, 70, 90);
     --red: rgb(190, 60, 60);
     --chiaro: #ebebeb;
-    --azzurro: #16d4d4;
-    --grigio: #292929;
-}
+    --bs-primary: var(--blu); /* Change to your desired primary color */
+    --bs-success: #488a4b;
+  }
 
 .title-first-half {
   color: var(--chiaro)
@@ -139,7 +139,7 @@ body {
 }
 
 .nav-section .nav-link:hover {
-    color: var(--azzurro);
+    color: var(--blu);
 }
 
 /* Remove margin from the first child of nav-item */
@@ -148,6 +148,16 @@ body {
   padding-left: 0;
 }
 
+.btn-primary {
+  background-color: var(--bs-primary);
+  border-color: var(--bs-primary);
+}
+
+.btn-success {
+  color: #fff;
+  background-color: var(--bs-success);
+  border-color: var(--bs-success);
+}
 
 
 @media (max-width: 768px) {

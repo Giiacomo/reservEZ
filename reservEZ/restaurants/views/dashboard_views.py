@@ -1,10 +1,31 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from ..forms.dashboard_forms import RestaurantForm, AddressForm, DishForm, MenuSectionForm, OpeningHoursForm
-from ..models import Menu, Restaurant, OpeningHours, MenuSection, Dish, Reservation
 from django.contrib.auth.decorators import login_required
+from ..forms.dashboard_forms import RestaurantForm, AddressForm, DishForm, MenuSectionForm, OpeningHoursForm
+from ..models import Menu, Restaurant, OpeningHours, MenuSection, Dish, Reservation, Order
 from ..utils.decorators import user_has_restaurant
-from ..utils.constants import WEEKDAYS
+from ..utils.constants import WEEKDAYS, STATUS_CHOICES
 from ..utils.functions import get_incomplete_fields
+
+@login_required
+@user_has_restaurant
+def manage_orders(request):
+    restaurant = Restaurant.objects.filter(owner=request.user).first()
+    orders = Order.objects.filter(restaurant=restaurant).order_by('date')
+
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        new_status = request.POST.get('status')
+        order = get_object_or_404(Order, id=order_id)
+        order.status = new_status
+        order.save()
+        return redirect('restaurants:manage_orders')
+
+    context = {
+        'restaurant': restaurant,
+        'orders': orders,
+        'status_choices': STATUS_CHOICES,
+    }
+    return render(request, 'restaurants/manage-orders.html', context)
 
 @login_required
 def create_restaurant(request):

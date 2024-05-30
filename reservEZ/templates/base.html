@@ -21,7 +21,7 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarToggle">
                 <div class="navbar-nav mr-auto">
-                    <a class="nav-item nav-link" href="{% url 'restaurants:user_homepage'%}">Home</a>
+                    <a class="nav-item nav-link" href="{% url 'restaurants:user_homepage'%}"><i class="fas fa-home"></i></a>
                     <a class="nav-item nav-link" href="#">About</a>
                 </div>
                 <div class="navbar-nav">
@@ -29,10 +29,10 @@
                     {% if user.owned_restaurants %}
                         <a class="nav-item nav-link" href="{% url 'restaurants:dashboard' %}">Dashboard</a>
                     {% endif %}
-                    <a class="nav-item nav-link" href="{% url 'accounts:dashboard' %}">Profile</a>
+                    <a class="nav-item nav-link" href="{% url 'accounts:dashboard' %}"><i class="fa-solid fa-user"></i></a>
                     <form method="post" action="{% url 'logout' %}">
                         {% csrf_token %}
-                        <button class="nav-item nav-link button-as-link" type="submit">Log Out</button>
+                        <button class="nav-item nav-link button-as-link" type="submit"><i class="fa fa-sign-out" aria-hidden="true"></i></button>
                     </form>
                     {% else %}
                     <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>

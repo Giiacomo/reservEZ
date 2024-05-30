@@ -20,12 +20,12 @@ def check_restaurant_complete(view_func):
         restaurant = Restaurant.objects.filter(pk=restaurant_id).first()
 
         if not restaurant:
-            return redirect('restaurants:user_homepage')  # Or any other page you prefer
+            return redirect('restaurants:user_homepage') 
 
         # Check if all required fields are present
         if not (restaurant.address and restaurant.opening_hours.exists() and restaurant.owner 
                 and restaurant.name and restaurant.description):
-            return redirect('restaurants:user_homepage')  # Replace 'homepage' with the name of your homepage view
+            return redirect('restaurants:user_homepage')  
 
         return view_func(request, *args, **kwargs)
     return _wrapped_view

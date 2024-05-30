@@ -9,8 +9,9 @@ WEEKDAYS = (
 )
 
 STATUS_CHOICES = [
-        ('NA', 'Not Accepted'),
-        ('A', 'Accepted'),
-        ('R', 'Ready'),
-        ('T', 'Retired'),
-    ]
+    ('NS', 'Not Sent'),
+    ('AW', 'Awaiting Acceptance'),
+    ('A', 'Accepted'),
+    ('R', 'Ready'),
+    ('T', 'Retired'),
+]
