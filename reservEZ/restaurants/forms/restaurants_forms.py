@@ -5,14 +5,15 @@ from ..models import Reservation, ActiveOrderItem
 from django.utils import timezone
 from datetime import datetime, timedelta
 
+
+
 class ReservationForm(forms.ModelForm):
-    date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
-    time = forms.TimeField(widget=forms.TimeInput(attrs={'type': 'time'}))
-    number_of_people = forms.IntegerField(min_value=1, label='Number of People')
+    weekday = forms.ChoiceField(label='Day')
+    time = forms.TimeField(widget=forms.Select())
 
     class Meta:
         model = Reservation
-        fields = ['date', 'time', 'number_of_people']
+        fields = ['weekday', 'time', 'number_of_people']
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
@@ -23,7 +24,7 @@ class ReservationForm(forms.ModelForm):
             Fieldset(
                 'Make a Reservation',
                 Div(
-                    Div('date', css_class='col-md-6'),
+                    Div('weekday', css_class='col-md-6'),
                     Div('time', css_class='col-md-6'),
                     css_class='row'
                 ),
@@ -35,13 +36,28 @@ class ReservationForm(forms.ModelForm):
             Submit('submit', 'Submit'),
         )
 
+        # Populate the weekday choices with the next available dates the restaurant is open
+        today = timezone.now().date()
+        days = []
+        for i in range(7):
+            day = today + timedelta(days=i)
+            weekday_display = day.strftime('%A (%d/%m/%Y)')
+            weekday_value = day.strftime('%Y-%m-%d')
+            if self.restaurant.opening_hours.filter(weekday=day.weekday()).exists():
+                days.append((weekday_value, weekday_display))
+        self.fields['weekday'].choices = days
+
     def clean(self):
         cleaned_data = super().clean()
-        date = cleaned_data.get('date')
+        date_str = cleaned_data.get('weekday')
         time = cleaned_data.get('time')
 
-        if date and time:
-            # Check if reservation time is within opening hours
+        if date_str and time:
+            try:
+                date = datetime.strptime(date_str, '%Y-%m-%d').date()
+            except ValueError:
+                raise forms.ValidationError('Invalid date format.')
+
             weekday = date.weekday()
             opening_hours = self.restaurant.opening_hours.filter(weekday=weekday).first()
             if not opening_hours:
@@ -58,7 +74,11 @@ class ReservationForm(forms.ModelForm):
             if Reservation.objects.filter(restaurant=self.restaurant, user=self.user, date=date).exists():
                 raise forms.ValidationError('You can only make one reservation per day at this restaurant.')
 
+            # Set the date field in the cleaned data
+            cleaned_data['date'] = date
+
         return cleaned_data
+
 
 
 class OrderItemForm(forms.ModelForm):

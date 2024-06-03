@@ -2,7 +2,7 @@
 
 {% block content_dashboard %}
 <h3>Manage Orders</h3>
-
+{% if orders %}
 <table class="table">
     <thead>
         <tr>
@@ -14,8 +14,9 @@
     </thead>
     <tbody>
         {% for order in orders %}
+        {% if not order.is_retired %}
         <tr>
-            <td>{{ order.id }}</td>
+            <td><a href="{% url 'restaurants:order_detail' order.id %}">{{ order.id }}</a></td>
             <td>{{ order.user.username }}</td>
             <td>{{ order.get_status_display }}</td>
             <td>
@@ -31,7 +32,12 @@
                 </form>
             </td>
         </tr>
+        {% endif %}
         {% endfor %}
     </tbody>
 </table>
+{% else %}
+    <h4 class="text-danger">No orders at the moment</h1>
+{% endif %}
+
 {% endblock %}

@@ -1,0 +1,59 @@
+{% for notification in notifications %}
+    <div class="notification-item" data-notification-id="{{ notification.id }}">
+        <a href="{{ notification.link }}">{{ notification.message }}</a>
+    </div>
+{% empty %}
+    <div class="notification-item">
+        No notifications.
+    </div>
+{% endfor %}
+
+
+<script>
+    $(document).ready(function(){
+        function markNotificationAsRead(notificationId) {
+            $.post(`/account/notifications/mark-notification/${notificationId}/`, function(data) {
+                if (data.success) {
+                    $(`[data-notification-id="${notificationId}"]`).remove();
+                }
+            });
+        }
+    
+        function getCSRFToken() {
+            const csrfCookie = document.cookie.split('; ').find(cookie => cookie.startsWith('csrftoken='));
+            if (csrfCookie) {
+                return csrfCookie.split('=')[1];
+            }
+            return null;
+        }
+    
+        $('.notification-item').click(function(event) {
+            const notificationId = $(this).data('notification-id');
+            const link = $(this).find('a').attr('href');
+            const csrfToken = getCSRFToken();
+            if (csrfToken) {
+                $.ajax({
+                    url: `/account/notifications/mark-notification/${notificationId}/`,
+                    type: 'POST',
+                    headers: { 'X-CSRFToken': csrfToken },
+                    success: function(data) {
+                        if (data.success) {
+                            $(`[data-notification-id="${notificationId}"]`).remove();
+                            if (link) {
+                                window.location.href = link;
+                            }
+                        }
+                    },
+                    error: function(xhr, textStatus, errorThrown) {
+                        console.error('Error:', textStatus);
+                    }
+                });
+            } else {
+                console.error('CSRF token not found.');
+            }
+        });
+    });
+    
+    
+    </script>
+    

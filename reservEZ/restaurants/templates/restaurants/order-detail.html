@@ -1,0 +1,42 @@
+{% extends 'restaurants/dashboard.html' %}
+
+{% block content_dashboard %}
+<h3>Order Details (ID: {{ order.id }})</h3>
+<p>Customer: {{ order.user.username }}</p>
+<p>Status: {{ order.get_status_display }}</p>
+
+<h4>Order Items</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Dish</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Quantity</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in order_items %}
+        <tr>
+            <td>{{ item.dish.dname }}</td>
+            <td>{{ item.dish.description }}</td>
+            <td>{{ item.dish.price }}</td>
+            <td>{{ item.quantity }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if not order.is_retired %}
+<h4>Change Order Status</h4>
+<form method="post" action="{% url 'restaurants:order_detail' order.id %}">
+    {% csrf_token %}
+    <select name="status" class="form-control">
+        {% for status, display in status_choices %}
+            <option value="{{ status }}" {% if order.status == status %}selected{% endif %}>{{ display }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit" name="update_status" class="btn btn-primary mt-2">Update Status</button>
+</form>
+{% endif %}
+{% endblock %}

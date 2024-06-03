@@ -5,6 +5,38 @@ from accounts.models import UserProfile
 from ..forms.restaurants_forms import ReservationForm, OrderItemForm
 from ..utils.decorators import check_restaurant_complete, filter_complete_restaurants
 from ..utils.functions import is_restaurant_open
+from django.http import JsonResponse
+from django.views.decorators.http import require_GET
+from datetime import timedelta, datetime
+
+@require_GET
+def get_time_choices(request):
+    date_str = request.GET.get('date')
+    restaurant_id = request.GET.get('restaurant_id')
+
+    if not date_str or not restaurant_id:
+        return JsonResponse({'time_choices': []})
+
+    try:
+        date = datetime.strptime(date_str, '%Y-%m-%d').date()
+    except ValueError:
+        return JsonResponse({'time_choices': []})
+
+    restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
+    weekday = date.weekday()
+    opening_hours = restaurant.opening_hours.filter(weekday=weekday).first()
+
+    if not opening_hours:
+        return JsonResponse({'time_choices': []})
+
+    opening_time = datetime.combine(date, opening_hours.opening_time)
+    closing_time = datetime.combine(date, opening_hours.closing_time)
+    times = []
+    while opening_time <= closing_time:
+        times.append((opening_time.strftime('%H:%M'), opening_time.strftime('%H:%M')))
+        opening_time += timedelta(minutes=15)
+
+    return JsonResponse({'time_choices': times})
 
 @login_required
 def add_to_order(request, restaurant_id, dish_id):
@@ -68,6 +100,7 @@ def restaurant_page(request, restaurant_id):
     }
     return render(request, 'restaurants/restaurant-page.html', context)
 
+@login_required
 @filter_complete_restaurants
 def user_homepage(request):
     # Fetch user profile
@@ -110,6 +143,7 @@ def user_homepage(request):
     }
     return render(request, 'restaurants/homepage.html', context)
 
+
 @login_required
 def make_reservation(request, restaurant_id):
     restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
@@ -120,6 +154,7 @@ def make_reservation(request, restaurant_id):
             reservation = form.save(commit=False)
             reservation.user = request.user
             reservation.restaurant = restaurant
+            reservation.date = form.cleaned_data['date']  # Ensure the date is set from cleaned_data
             reservation.save()
             return redirect('restaurants:restaurant_page', restaurant_id=restaurant.id)
     else:
@@ -129,7 +164,6 @@ def make_reservation(request, restaurant_id):
         'form': form,
         'restaurant': restaurant,
         'opening_hours': opening_hours,
-
     })
 
 @login_required

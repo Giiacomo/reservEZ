@@ -18,11 +18,40 @@ Make a Reservation
                     {% endfor %}
                 </ul>
             </div>
-            <form method="post">
+            <form method="post" id="reservationForm">
                 {% csrf_token %}
                 {% crispy form %}
             </form>
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const weekdayField = document.getElementById('id_weekday');
+        const timeField = document.getElementById('id_time');
+
+        weekdayField.addEventListener('change', function () {
+            const selectedDate = this.value;
+            fetch(`/restaurants/get_time_choices/?date=${selectedDate}&restaurant_id={{ restaurant.id }}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Clear current time choices
+                    timeField.innerHTML = '';
+
+                    // Populate new time choices
+                    data.time_choices.forEach(choice => {
+                        const option = document.createElement('option');
+                        option.value = choice[0];
+                        option.textContent = choice[1];
+                        timeField.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching time choices:', error);
+                });
+        });
+    });
+</script>
+
 {% endblock %}

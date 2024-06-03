@@ -110,6 +110,9 @@ class Order(models.Model):
     date = models.DateField(auto_now_add=True)
     status = models.CharField(max_length=2, choices=STATUS_CHOICES, default='NA')
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    
+    def is_retired(self):
+        return self.status == 'T'
 
     def __str__(self):
         return f"Order by {self.user.username} at {self.restaurant.name} on {self.date}"

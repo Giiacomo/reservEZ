@@ -1,0 +1,25 @@
+{% extends 'restaurants/dashboard.html' %}
+
+{% block content_dashboard %}
+<h3>Retired Orders</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Order Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in orders %}
+        <tr>
+            <td><a href="{% url 'restaurants:order_detail' order.id %}">{{ order.id }}</a></td>
+            <td>{{ order.user.username }}</td>
+            <td>{{ order.date }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

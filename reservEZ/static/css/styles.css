@@ -178,3 +178,35 @@ body {
       padding: 10px;
   }
 }
+
+.notification-dropdown {
+  position: absolute;
+  right: 10px;
+  top: 50px;
+  width: 300px;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+.notification-header {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  font-weight: bold;
+}
+.notification-body {
+  max-height: 300px;
+  overflow-y: auto;
+}
+.notification-item {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+.notification-item:last-child {
+  border-bottom: none;
+}
+.notification-item a {
+  text-decoration: none;
+  color: #333;
+}

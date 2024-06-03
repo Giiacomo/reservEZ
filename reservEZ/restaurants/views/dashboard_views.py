@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from ..forms.dashboard_forms import RestaurantForm, AddressForm, DishForm, MenuSectionForm, OpeningHoursForm
-from ..models import Menu, Restaurant, OpeningHours, MenuSection, Dish, Reservation, Order
+from ..models import Menu, Restaurant, OpeningHours, MenuSection, Dish, Reservation, Order, ActiveOrderItem
 from ..utils.decorators import user_has_restaurant
 from ..utils.constants import WEEKDAYS, STATUS_CHOICES
 from ..utils.functions import get_incomplete_fields
@@ -10,19 +10,21 @@ from ..utils.functions import get_incomplete_fields
 @user_has_restaurant
 def manage_orders(request):
     restaurant = Restaurant.objects.filter(owner=request.user).first()
-    orders = Order.objects.filter(restaurant=restaurant).order_by('date')
+    orders = Order.objects.filter(restaurant=restaurant).order_by('date').reverse() 
+    active_orders = [order for order in orders if not order.is_retired()]
 
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
         new_status = request.POST.get('status')
         order = get_object_or_404(Order, id=order_id)
-        order.status = new_status
-        order.save()
+        if not order.is_retired():
+            order.status = new_status
+            order.save()
         return redirect('restaurants:manage_orders')
 
     context = {
         'restaurant': restaurant,
-        'orders': orders,
+        'orders': active_orders,
         'status_choices': STATUS_CHOICES,
     }
     return render(request, 'restaurants/manage-orders.html', context)
@@ -213,3 +215,36 @@ def delete_opening_hour(request, pk):
 def view_all_reservations(request):
     reservations = Reservation.objects.filter(restaurant__owner=request.user).order_by('date', 'time')
     return render(request, 'restaurants/restaurant-reservation.html', {'reservations': reservations})
+
+@login_required
+@user_has_restaurant
+def order_detail(request, order_id):
+    restaurant = get_object_or_404(Restaurant, owner=request.user)
+    order = get_object_or_404(Order, id=order_id, restaurant=restaurant)
+    order_items = order.active_items.all()
+
+    if request.method == 'POST':
+        new_status = request.POST.get('status')
+        order.status = new_status
+        order.save()
+
+        return redirect('restaurants:order_detail', order_id=order_id)
+
+    context = {
+        'order': order,
+        'order_items': order_items,
+        'status_choices': STATUS_CHOICES,
+    }
+    return render(request, 'restaurants/order-detail.html', context)
+
+@login_required
+@user_has_restaurant
+def retired_orders(request):
+    restaurant = Restaurant.objects.filter(owner=request.user).first()
+    orders = Order.objects.filter(restaurant=restaurant).order_by('date').reverse()
+    retired_orders = [order for order in orders if order.is_retired()]
+    context = {
+        'restaurant': restaurant,
+        'orders': retired_orders,
+    }
+    return render(request, 'restaurants/retired-orders.html', context)
