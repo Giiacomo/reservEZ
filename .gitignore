@@ -6,4 +6,6 @@
 
 **/venv/
 
+**/media/user**
+
 setenv.sh
