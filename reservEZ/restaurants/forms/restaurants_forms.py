@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 class ReservationForm(forms.ModelForm):
     weekday = forms.ChoiceField(label='Day')
     time = forms.TimeField(widget=forms.Select())
+    number_of_people = forms.IntegerField(min_value=1, label='Number of People', initial=1)
 
     class Meta:
         model = Reservation

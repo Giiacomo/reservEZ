@@ -31,9 +31,10 @@
                     <a class="nav-item nav-link" href="#" id="notificationIcon">
                         <i class="fa fa-bell"></i>
                         {% if unread_notifications_count > 0 %}
-                        <span class="badge badge-danger">{{ unread_notifications_count }}</span>
+                            <span class="badge badge-danger" id="notificationBadge">{{ unread_notifications_count }}</span> <!-- Badge element -->
                         {% endif %}
                     </a>
+                    
                     <div class="notification-dropdown" id="notificationDropdown" style="display: none;">
                         <div class="notification-header">Notifications</div>
                         <div class="notification-body">

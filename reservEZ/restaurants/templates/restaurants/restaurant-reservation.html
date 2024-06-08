@@ -2,6 +2,8 @@
 
 {% block content_dashboard %}
 <h2 class="my-3">All Reservations</h2>
+
+{% if reservations %}
 <div class="table-responsive">
     <table class="table table-striped">
         <thead>
@@ -21,7 +23,7 @@
                 <td>{{ reservation.user.username }}</td>
                 <td>{{ reservation.number_of_people }}</td>
                 <td>
-                    <form method="post" action="{% url 'restaurants:delete_reservation' reservation.restaurant.id reservation.id %}" style="display: inline;">
+                    <form method="post" action="{% url 'restaurants:owner_delete_reservation' reservation.id %}" style="display: inline;">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                     </form>
@@ -31,4 +33,8 @@
         </tbody>
     </table>
 </div>
+{% else %}
+<p>No reservations at the moment.</p>
+{% endif %}
+
 {% endblock %}

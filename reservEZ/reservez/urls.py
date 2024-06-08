@@ -22,6 +22,9 @@ from django.conf import settings
 from django.conf.urls.static import static
 from accounts import urls as account_urls
 
+handler404 = 'reservez.views.custom_404_view'
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('register/', account_views.register, name='register'),

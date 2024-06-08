@@ -296,3 +296,21 @@ def manage_tags(request):
         form = RestaurantTagForm(instance=restaurant)
     
     return render(request, 'restaurants/tags.html', {'form': form, 'restaurant': restaurant})
+
+
+
+@login_required
+def delete_reservation(request, reservation_id):
+    # Assuming reservation_id is the ID of the reservation to be deleted
+    reservation = get_object_or_404(Reservation, pk=reservation_id)
+
+    # Check if the user owns the restaurant associated with the reservation
+    if request.user == reservation.restaurant.owner:
+        if request.method == 'POST':
+            # Handle the POST request to delete the reservation
+            reservation.delete()
+            # Redirect to a relevant page after deletion
+            return redirect('restaurants:dashboard')  # Redirect to the dashboard or any other page
+        else:
+            # Handle GET request, render a confirmation page if needed
+            return render(request, 'restaurants/delete_reservation.html', {'reservation': reservation})
