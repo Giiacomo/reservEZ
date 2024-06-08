@@ -5,7 +5,19 @@ from .models import UserProfile
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from .models import Notification
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
+def send_notification_count():
+    channel_layer = get_channel_layer()
+    count = Notification.objects.filter(is_read=False).count()
+    async_to_sync(channel_layer.group_send)(
+        "notifications",
+        {
+            "type": "send_notification_count",
+            "count": count
+        }
+    )
 
 @login_required
 def fetch_notifications(request):
@@ -39,8 +51,7 @@ def register(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            UserProfile.objects.create(user=user)
+            form.save()
             return redirect('login')  # Redirect to a success page after registration
     else:
         form = UserRegistrationForm()

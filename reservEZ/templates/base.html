@@ -62,8 +62,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
 <script>
     $(document).ready(function(){
-
-
         $('#notificationIcon').click(function(event){
             console.log("Test")
             event.preventDefault();
@@ -83,48 +81,39 @@
             }
         });
     });
-    document.addEventListener('DOMContentLoaded', function() {
-    const notificationBody = document.querySelector('.notification-body');
-    const notificationCountBadge = document.querySelector('#notificationIcon .badge');
-    const wsScheme = window.location.protocol === 'https:' ? 'wss' : 'ws';
-    const socket = new WebSocket(`${wsScheme}://${window.location.host}/ws/notifications/`);
 
-    socket.onopen = function(event) {
-        console.log('WebSocket connection opened:', event); // Log when the connection opens
-    };
-
-    socket.onmessage = function(event) {
-        console.log('WebSocket message received:', event.data); // Log the received message
-        const data = JSON.parse(event.data);
-        if (data.notification) {
-            const notification = data.notification;
-            const notificationItem = document.createElement('div');
-            notificationItem.classList.add('notification-item');
-            notificationItem.dataset.notificationId = notification.id;
-            notificationItem.innerHTML = `<a href="${notification.link}">${notification.message}</a>`;
-            notificationBody.prepend(notificationItem);
-        }
-        if (data.notification_count !== undefined) {
-            console.log('Updating notification count:', data.notification_count); // Log the notification count update
-            notificationCountBadge.textContent = data.notification_count;
-            if (data.notification_count > 0) {
-                notificationCountBadge.classList.add('badge-danger');
+    document.addEventListener("DOMContentLoaded", function () {
+        const socket = new WebSocket('ws://' + window.location.host + '/ws/notifications/');
+    
+        socket.onmessage = function(event) {
+            console.log("Received message:", event.data);
+            const data = JSON.parse(event.data);
+            updateNotificationCount(data.notification_count);
+        };
+    
+        function updateNotificationCount(count) {
+            let notificationBadge = document.querySelector('.badge');
+            if (!notificationBadge) {
+                // Create the badge element if it doesn't exist
+                const navIcon = document.getElementById('notificationIcon');
+                notificationBadge = document.createElement('span');
+                notificationBadge.className = 'badge badge-danger';
+                notificationBadge.style.display = 'none'; // Hide initially
+                navIcon.appendChild(notificationBadge);
+            }
+        
+            if (count > 0) {
+                notificationBadge.textContent = count;
+                notificationBadge.style.display = 'inline'; // Show the badge
+                console.log("Updating notification count:", count);
             } else {
-                notificationCountBadge.classList.remove('badge-danger');
+                notificationBadge.style.display = 'none'; // Hide the badge when count is 0
             }
         }
-    };
-
-    socket.onclose = function(event) {
-        console.error('WebSocket closed:', event);
-    };
-
-    socket.onerror = function(event) {
-        console.error('WebSocket error:', event);
-    };
-});
-
+        
+    });
 </script>
+
 
 
 

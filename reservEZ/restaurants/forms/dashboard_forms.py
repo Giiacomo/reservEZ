@@ -2,11 +2,47 @@
 from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Div, Submit
-from ..models import Restaurant, Address, MenuSection, Dish, OpeningHours
-from ..utils.constants import WEEKDAYS
+from ..models import Restaurant, Address, Tag, MenuSection, Dish, OpeningHours
+from ..utils.constants import WEEKDAYS, TAG_CHOICES
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 import datetime
+
+class LogoUploadForm(forms.ModelForm):
+    class Meta:
+        model = Restaurant
+        fields = ['logo']
+
+class BannerUploadForm(forms.ModelForm):
+    class Meta:
+        model = Restaurant
+        fields = ['banner']
+
+class RestaurantTagForm(forms.ModelForm):
+    tags = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple)
+
+    class Meta:
+        model = Restaurant
+        fields = ['tags']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['tags'].choices = TAG_CHOICES  # Use the TAG_CHOICES from constants.py
+
+    def clean_tags(self):
+        tags = self.cleaned_data.get('tags', [])
+        if len(tags) > 3:
+            raise forms.ValidationError('You can select a maximum of 3 tags.')
+        return tags
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        tags_data = self.cleaned_data['tags']
+        tags = [Tag.objects.get_or_create(name=tag)[0] for tag in tags_data]  # Retrieve or create Tag instances
+        instance.tags.set(tags, clear=True)  # Set the tags for the Restaurant
+        if commit:
+            instance.save()
+        return instance
 
 
 class OpeningHoursForm(forms.ModelForm):
@@ -106,9 +142,10 @@ class RestaurantForm(forms.ModelForm):
         cleaned_data = super().clean()
         name = cleaned_data.get('name')
         # Check if a restaurant with the same name already exists
-        if Restaurant.objects.filter(owner=self.user).exists():
-            raise forms.ValidationError('A restaurant for this owner already exists .')
+        if Restaurant.objects.filter(owner=self.user, name=name).exists():
+            raise forms.ValidationError('A restaurant with this name already exists for this owner.')
         return cleaned_data
+
 
 
 class MenuSectionForm(forms.ModelForm):

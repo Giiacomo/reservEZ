@@ -18,6 +18,9 @@ from django.contrib import admin
 from django.urls import path, include
 from accounts import views as account_views
 from django.contrib.auth import views as auth_views
+from django.conf import settings
+from django.conf.urls.static import static
+from accounts import urls as account_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,5 +29,5 @@ urlpatterns = [
     path('logout', auth_views.LogoutView.as_view(template_name='accounts/logout.html'), name='logout'),
     path('restaurants/', include('restaurants.urls')),
     path('account/', include('accounts.urls')),
-
-]
+    path('', account_urls.user_dashboard)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,0 +1,37 @@
+{% extends 'restaurants/dashboard.html' %}
+{% load crispy_forms_tags %}
+
+{% block content_dashboard %}
+<style>
+    .scrollable-container {
+        max-height: 90vh; /* Set maximum height for the container */
+        overflow-y: auto; /* Enable vertical scrolling */
+    }
+
+    .tag-form {
+        padding: 20px; /* Add padding for better appearance */
+    }
+
+    .error-message {
+        color: red; /* Customize error message color */
+        font-weight: bold; /* Make error message bold */
+    }
+</style>
+<div class="scrollable-container">
+    <div class="tag-form">
+        <form method="post">
+            <h2>Manage Tags for {{ restaurant.name }}<button type="submit" class=" mx-4 mb-2 btn custom-btn custom-btn-primary btn-sm">
+                <i class="fas fa-check"></i> Set
+            </button></h2>
+            {% for key, value in form.errors.items %}
+            <ul>
+                <li>{{value}}</li>
+            </ul>
+             {% endfor %}
+            {% csrf_token %}
+
+            {{ form|crispy }}
+        </form>
+    </div>
+</div>
+{% endblock %}

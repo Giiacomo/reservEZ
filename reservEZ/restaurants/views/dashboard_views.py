@@ -1,10 +1,37 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from ..forms.dashboard_forms import RestaurantForm, AddressForm, DishForm, MenuSectionForm, OpeningHoursForm
+from ..forms.dashboard_forms import RestaurantForm, RestaurantTagForm, AddressForm, DishForm, MenuSectionForm, OpeningHoursForm, LogoUploadForm, BannerUploadForm
 from ..models import Menu, Restaurant, OpeningHours, MenuSection, Dish, Reservation, Order, ActiveOrderItem
 from ..utils.decorators import user_has_restaurant
 from ..utils.constants import WEEKDAYS, STATUS_CHOICES
 from ..utils.functions import get_incomplete_fields
+from django.db import transaction
+
+@login_required
+@user_has_restaurant
+def upload_logo(request):
+    restaurant = Restaurant.objects.filter(owner=request.user).first()
+    if request.method == 'POST':
+        form = LogoUploadForm(request.POST, request.FILES, instance=restaurant)
+        if form.is_valid():
+            form.save()
+            return redirect('restaurants:dashboard')
+    else:
+        form = LogoUploadForm(instance=restaurant)
+    return render(request, 'restaurants/upload-logo.html', {'form': form})
+
+@login_required
+@user_has_restaurant
+def upload_banner(request):
+    restaurant = Restaurant.objects.filter(owner=request.user).first()
+    if request.method == 'POST':
+        form = BannerUploadForm(request.POST, request.FILES, instance=restaurant)
+        if form.is_valid():
+            form.save()
+            return redirect('restaurants:dashboard')
+    else:
+        form = BannerUploadForm(instance=restaurant)
+    return render(request, 'restaurants/upload-banner.html', {'form': form})
 
 @login_required
 @user_has_restaurant
@@ -29,33 +56,39 @@ def manage_orders(request):
     }
     return render(request, 'restaurants/manage-orders.html', context)
 
+
 @login_required
 def create_restaurant(request):
     if request.method == 'POST':
         address_form = AddressForm(request.POST)
         restaurant_form = RestaurantForm(request.POST, user=request.user)
+        
         if address_form.is_valid() and restaurant_form.is_valid():
-            # Save the Address
-            address = address_form.save()
+            with transaction.atomic():
+                # Save the Address
+                address = address_form.save()
 
-            # Save the Restaurant
-            restaurant = restaurant_form.save(commit=False)
-            restaurant.address = address
-            restaurant.owner = request.user  # Assuming user is logged in
-            restaurant.save()
+                # Save the Restaurant
+                restaurant = restaurant_form.save(commit=False)
+                restaurant.address = address
+                restaurant.owner = request.user
+                restaurant.save()  # Save the Restaurant to get an ID
 
-            menu = Menu(restaurant=restaurant)
-            menu.save()
+                # Save the menu
+                menu = Menu.objects.create(restaurant=restaurant)
 
-            return redirect('restaurants:dashboard')  # Redirect to restaurant detail view
+            return redirect('restaurants:dashboard')
     else:
         address_form = AddressForm()
         restaurant_form = RestaurantForm(user=request.user)
 
-    return render(request, 'restaurants/restaurant-create.html', {'address_form': address_form, 'restaurant_form': restaurant_form, 'title':'Register your restaurant'})
+    return render(request, 'restaurants/restaurant-create.html', {
+        'address_form': address_form,
+        'restaurant_form': restaurant_form,
+        'title': 'Register your restaurant'
+    })
 
-
-
+    
 @login_required
 @user_has_restaurant
 def dashboard(request):
@@ -248,3 +281,18 @@ def retired_orders(request):
         'orders': retired_orders,
     }
     return render(request, 'restaurants/retired-orders.html', context)
+
+@login_required
+@user_has_restaurant
+def manage_tags(request):
+    restaurant = Restaurant.objects.filter(owner=request.user).first()
+    
+    if request.method == 'POST':
+        form = RestaurantTagForm(request.POST, instance=restaurant)
+        if form.is_valid():
+            form.save()
+            return redirect('restaurants:manage_tags')  # Assuming you have a URL named 'restaurants:restaurant_page'
+    else:
+        form = RestaurantTagForm(instance=restaurant)
+    
+    return render(request, 'restaurants/tags.html', {'form': form, 'restaurant': restaurant})

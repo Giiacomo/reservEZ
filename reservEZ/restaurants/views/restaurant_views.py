@@ -1,10 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from ..models import Restaurant, MenuSection, Reservation, Order, ActiveOrderItem, Dish
+from ..models import Restaurant, Tag, MenuSection, Reservation, Order, ActiveOrderItem, Dish
 from accounts.models import UserProfile
 from ..forms.restaurants_forms import ReservationForm, OrderItemForm
 from ..utils.decorators import check_restaurant_complete, filter_complete_restaurants
-from ..utils.functions import is_restaurant_open
+from ..utils.functions import generate_recommendations, filter_restaurants
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET
 from datetime import timedelta, datetime
@@ -99,6 +99,7 @@ def restaurant_page(request, restaurant_id):
         'order': order,  # Pass the order to the template
     }
     return render(request, 'restaurants/restaurant-page.html', context)
+    
 
 @login_required
 @filter_complete_restaurants
@@ -106,43 +107,32 @@ def user_homepage(request):
     # Fetch user profile
     user_profile = UserProfile.objects.get(user=request.user)
 
-    # Get user's city from the address associated with the user profile
-    user_city = user_profile.address.city if user_profile.address else None
+    # Get all filter options
+    cities = Restaurant.objects.values_list('address__city', flat=True).distinct()
+    tag_choices = Tag.objects.all()
 
-    # Use the filtered complete restaurants
-    complete_restaurants = request.complete_restaurants
+    # Get filter values from request
+    search_query = request.GET.get('q', '')
+    selected_city = request.GET.get('city', '')
+    selected_tag = request.GET.get('tag', '')
 
-    # Create lists to store restaurant data based on different categories
-    in_city_open = []
-    in_city_closed = []
-    outside_city_open = []
-    outside_city_closed = []
+    # Filter restaurants based on search query, city, and tags
+    filtered_restaurants = filter_restaurants(search_query, selected_city, selected_tag)
 
-    for restaurant in complete_restaurants:
-        restaurant_data = {
-            'restaurant': restaurant,
-            'inCity': restaurant.address.city == user_city,
-            'isOpen': is_restaurant_open(restaurant)
-        }
-        if restaurant_data['inCity']:
-            if restaurant_data['isOpen']:
-                in_city_open.append(restaurant_data)
-            else:
-                in_city_closed.append(restaurant_data)
-        else:
-            if restaurant_data['isOpen']:
-                outside_city_open.append(restaurant_data)
-            else:
-                outside_city_closed.append(restaurant_data)
-
-    # Concatenate lists to create the final ordered list
-    restaurant_data_list = in_city_open + in_city_closed + outside_city_open + outside_city_closed
+    # Get recommended restaurants
+    recommended_restaurants = generate_recommendations(request.user)
 
     context = {
-        'restaurant_data_list': restaurant_data_list,
+        'recommended_restaurants': recommended_restaurants,
+        'all_restaurants': filtered_restaurants,
+        'cities': cities,
+        'tag_choices': tag_choices,
+        'selected_city': selected_city,
+        'selected_tag': selected_tag,
+        'search_query': search_query,
     }
+    
     return render(request, 'restaurants/homepage.html', context)
-
 
 @login_required
 def make_reservation(request, restaurant_id):

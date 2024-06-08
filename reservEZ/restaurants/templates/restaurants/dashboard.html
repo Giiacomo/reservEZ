@@ -88,8 +88,18 @@
         <li class="nav-item">
             <a class="nav-link" href="{% url 'restaurants:set_opening_hours' %}">Opening Hours</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'restaurants:manage_tags' %}">Tags</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'restaurants:upload_logo' %}">Upload Logo</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'restaurants:upload_banner' %}">Upload Banner</a>
+        </li>
     </ul>
 </div>
+
 {% endblock %}
 
 {% block content_dashboard %}
@@ -140,6 +150,20 @@
                 </ul>
             {% else %}
                 No opening hours set
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <th>Tags</th>
+        <td>
+            {% if restaurant.tags.exists %}
+                <ul>
+                {% for tag in restaurant.tags.all %}
+                    <li>{{ tag.name }}</li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                No tags set
             {% endif %}
         </td>
     </tr>

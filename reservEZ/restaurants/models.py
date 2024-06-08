@@ -30,11 +30,26 @@ class Address(models.Model):
     def __str__(self):
         return f"{self.street}, {self.city}, {self.country}"
 
+class Tag(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return self.name
+
+def user_directory_path(instance, filename):
+    # MEDIA_ROOT/user_<username>/<filename>
+    return f'user_{instance.owner.username}/{filename}'
+
 class Restaurant(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owned_restaurants')
     name = models.CharField(max_length=100)
     description = models.TextField()
     address = models.OneToOneField(Address, on_delete=models.CASCADE, related_name='restaurant')
+    tags = models.ManyToManyField(Tag, blank=True)
+    banner = models.ImageField(upload_to=user_directory_path, null=True, blank=True)
+    logo = models.ImageField(upload_to=user_directory_path, null=True, blank=True)
+
+
 
     def save(self, *args, **kwargs):
         if self.pk:

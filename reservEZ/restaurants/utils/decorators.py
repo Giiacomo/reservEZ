@@ -1,6 +1,7 @@
 from django.shortcuts import redirect
 from functools import wraps
 from restaurants.models import Restaurant
+from .functions import get_incomplete_fields
 
 def user_has_restaurant(view_func):
     @wraps(view_func)
@@ -23,8 +24,7 @@ def check_restaurant_complete(view_func):
             return redirect('restaurants:user_homepage') 
 
         # Check if all required fields are present
-        if not (restaurant.address and restaurant.opening_hours.exists() and restaurant.owner 
-                and restaurant.name and restaurant.description):
+        if get_incomplete_fields(restaurant):
             return redirect('restaurants:user_homepage')  
 
         return view_func(request, *args, **kwargs)
@@ -37,8 +37,7 @@ def filter_complete_restaurants(view_func):
         complete_restaurants = []
 
         for restaurant in all_restaurants:
-            if (restaurant.address and restaurant.opening_hours.exists() and restaurant.owner 
-                and restaurant.name and restaurant.description):
+            if not get_incomplete_fields(restaurant):
                 complete_restaurants.append(restaurant)
 
         request.complete_restaurants = complete_restaurants

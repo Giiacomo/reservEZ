@@ -1,0 +1,11 @@
+{% extends 'restaurants/dashboard.html' %}
+{% load static %}
+
+{% block content_dashboard %}
+<h2>Upload Logo</h2>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Upload</button>
+</form>
+{% endblock %}

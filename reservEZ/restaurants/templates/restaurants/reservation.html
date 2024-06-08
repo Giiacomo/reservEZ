@@ -25,7 +25,6 @@ Make a Reservation
         </div>
     </div>
 </div>
-
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const weekdayField = document.getElementById('id_weekday');
@@ -51,7 +50,12 @@ Make a Reservation
                     console.error('Error fetching time choices:', error);
                 });
         });
+
+        // Trigger change event when the page loads
+        const event = new Event('change');
+        weekdayField.dispatchEvent(event);
     });
 </script>
+
 
 {% endblock %}

@@ -1,7 +1,7 @@
 from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Div, Submit
-from ..models import Reservation, ActiveOrderItem
+from ..models import Reservation, ActiveOrderItem, Restaurant, Tag
 from django.utils import timezone
 from datetime import datetime, timedelta
 
@@ -79,6 +79,23 @@ class ReservationForm(forms.ModelForm):
 
         return cleaned_data
 
+
+class RestaurantForm(forms.ModelForm):
+    tags = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False
+    )
+
+    class Meta:
+        model = Restaurant
+        fields = ['name', 'description', 'address', 'tags']
+
+    def clean_tags(self):
+        tags = self.cleaned_data['tags']
+        if tags.count() > 3:
+            raise forms.ValidationError("You can select a maximum of 3 tags.")
+        return tags
 
 
 class OrderItemForm(forms.ModelForm):
