@@ -15,12 +15,30 @@
             <div class="card border-primary mb-3">
                 <div class="card-header">Restaurant Info</div>
                 <div class="card-body">
-                    <h5 class="card-title">{{ restaurant.name }}</h5>
-                    <p class="card-text">{{ restaurant.description }}</p>
+                    <div class="row">
+                        <div class="col-md-2">
+                            {% if restaurant.logo %}
+                            <img src="{{ restaurant.logo.url }}" alt="{{ restaurant.name }} Logo" class="img-fluid">
+                            {% endif %}
+                        </div>
+                        <div class="col-md-10">
+                            <h5 class="card-title">{{ restaurant.name }}</h5>
+                            <p class="card-text">{{ restaurant.description }}</p>
+                            <!-- Address -->
+                            <p><strong>Address:</strong> {{ restaurant.address.street }}, {{ restaurant.address.city }}, {{ restaurant.address.state }}, {{ restaurant.address.country }}, {{ restaurant.address.postal_code }}</p>
+                            <p><strong>Opening Hours:</strong></p>
+                            <ul>
+                                {% for opening_hour in restaurant.get_opening_hours %}
+                                <li>{{ opening_hour.get_weekday_display }}: {{ opening_hour.opening_time }} - {{ opening_hour.closing_time }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    
     <div class="row">
         {% if menu_sections %}
         <div class="col-md-4">
@@ -126,12 +144,16 @@
                                 {% csrf_token %}
                                 <button type="submit" class="btn btn-success mt-3">Submit Order</button>
                             </form>
+                            <form method="post" action="{% url 'restaurants:delete_order' restaurant.id order.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger mt-3">Delete Order</button>
+                            </form>
                         {% endif %}
                     {% else %}
                         <p>No active orders.</p>
                     {% endif %}
                 </div>
-            </div>
+            </div>            
         </div>
     </div>
 </div>

@@ -6,6 +6,13 @@
     --bs-success: #488a4b;
 }
 
+.text-primary-c {
+    color: var(--blu) !important
+}
+.text-danger-c {
+    color: var(--red) !important
+}
+
 .title-first-half {
   color: var(--chiaro)
 }
@@ -219,45 +226,3 @@ ul {
     color: #333;
 }
 
-.card {
-    width: 100%;
-    overflow: hidden;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
-
-.banner-container {
-    position: relative;
-    width: 100%;
-    height: 150px; /* Fixed height for banner */
-    overflow: hidden;
-}
-
-.banner-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.logo-container {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-}
-
-.logo-img {
-    width: 50px;
-    height: auto;
-}
-
-.card-body {
-    flex: 1; /* Ensure the card body takes up remaining space */
-    display: flex;
-    flex-direction: column;
-}
-
-.card-body .mt-auto {
-    margin-top: auto;
-}

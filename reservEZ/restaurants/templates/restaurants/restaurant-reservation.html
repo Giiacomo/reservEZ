@@ -1,7 +1,7 @@
 {% extends 'restaurants/dashboard.html' %}
 
 {% block content_dashboard %}
-<h2 class="my-3">All Reservations</h2>
+<h3>All Reservations</h3>
 
 {% if reservations %}
 <div class="table-responsive">
@@ -34,7 +34,7 @@
     </table>
 </div>
 {% else %}
-<p>No reservations at the moment.</p>
+<h4 class="text-danger-c">No reservations at the moment.</h4>
 {% endif %}
 
 {% endblock %}

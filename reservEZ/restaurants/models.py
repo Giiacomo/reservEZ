@@ -49,7 +49,8 @@ class Restaurant(models.Model):
     banner = models.ImageField(upload_to=user_directory_path, null=True, blank=True)
     logo = models.ImageField(upload_to=user_directory_path, null=True, blank=True)
 
-
+    def get_opening_hours(self):
+        return self.opening_hours.all().order_by('weekday')
 
     def save(self, *args, **kwargs):
         if self.pk:

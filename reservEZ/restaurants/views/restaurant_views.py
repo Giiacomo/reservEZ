@@ -60,6 +60,16 @@ def add_to_order(request, restaurant_id, dish_id):
         return redirect('restaurants:restaurant_page', restaurant_id=restaurant_id)
 
 @login_required
+def delete_order(request, restaurant_id, order_id):
+    order = get_object_or_404(Order, pk=order_id, restaurant_id=restaurant_id, user=request.user)
+    
+    if order.status == 'NS':  
+        order.delete()
+        
+    return redirect('restaurants:restaurant_page', restaurant_id=restaurant_id)
+
+
+@login_required
 def delete_from_order(request, restaurant_id, item_id):
     item = get_object_or_404(ActiveOrderItem, pk=item_id)
 

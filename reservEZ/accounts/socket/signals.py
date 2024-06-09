@@ -14,9 +14,9 @@ def create_reservation_notification(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=Order)
 def create_order_notification(sender, instance, created, **kwargs):
-    if created:
-        message = f"New order from {instance.user.username} on {instance.date}. Total price: {instance.total_price}."
-        create_notification(instance.restaurant.owner, message, f'/restaurants/manage-orders/order/{instance.id}/')
+    if instance.status == 'AW':
+            message = f"New order from {instance.user.username} on {instance.date}. Total price: {instance.total_price}."
+            create_notification(instance.restaurant.owner, message, f'/restaurants/manage-orders/order/{instance.id}/')
 
 @receiver(post_save, sender=Order)
 def order_status_notification(sender, instance, **kwargs):

@@ -26,6 +26,7 @@ urlpatterns = [
     path('page/<int:restaurant_id>/reservation/', rv.make_reservation, name='make_reservation'),
     path('page/<int:restaurant_id>/reservation/<int:reservation_id>/delete/', rv.delete_reservation, name='delete_reservation'),
     path('page/<int:restaurant_id>/submit-order/', rv.submit_order, name='submit_order'),
+    path('page/<int:restaurant_id>/delete_order/<int:order_id>/', rv.delete_order, name='delete_order'),
     path('restaurant-list/', rv.restaurant_list, name='restaurant_list'),
     path('reservations/', dv.view_all_reservations, name='all_reservations'),
     path('section/<int:section_id>/delete/', dv.delete_section, name='delete_section'),
