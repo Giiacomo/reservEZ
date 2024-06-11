@@ -38,14 +38,16 @@ def generate_recommendations(user, complete_restaurants):
         if any(tag.id in favorite_tag_ids for tag in restaurant.tags.all())
     ]
 
+    # Limit the number of recommendations to 3
+    recommendations = filtered_restaurants[:3]
+
     # Annotate and sort the filtered restaurants based on recent interactions
-    for restaurant in filtered_restaurants:
+    for restaurant in recommendations:
         restaurant.weight = 2 if restaurant.id in recent_restaurant_ids else 1
     
-    recommendations = sorted(filtered_restaurants, key=lambda r: r.weight, reverse=True)
+    recommendations = sorted(recommendations, key=lambda r: r.weight, reverse=True)
 
     return recommendations
-
 
 def is_restaurant_open(restaurant):
     current_time = timezone.now().time()
