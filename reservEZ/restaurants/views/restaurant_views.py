@@ -91,16 +91,20 @@ def submit_order(request, restaurant_id):
 
 def restaurant_list(request):
     restaurants = Restaurant.objects.all()
-    return render(request, 'restaurants/restaurant-list.html', {'restaurants': restaurants, 'title': 'List of restaurants:'})
+    return render(request, 'restaurants/public/restaurant-list.html', {'restaurants': restaurants, 'title': 'List of restaurants:'})
 
 @check_restaurant_complete
-@login_required
+#@login_required
 def restaurant_page(request, restaurant_id):
     restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
     menu_sections = MenuSection.objects.filter(menu__restaurant=restaurant)
-    user_reservations = Reservation.objects.filter(restaurant=restaurant, user=request.user)
     
-    order = Order.objects.filter(restaurant=restaurant, user=request.user).exclude(status='T').first()
+    # Check if user is authenticated before accessing user-related data
+    user_reservations = None
+    order = None
+    if request.user.is_authenticated:
+        user_reservations = Reservation.objects.filter(restaurant=restaurant, user=request.user)
+        order = Order.objects.filter(restaurant=restaurant, user=request.user).exclude(status='T').first()
 
     context = {
         'restaurant': restaurant,
@@ -108,16 +112,17 @@ def restaurant_page(request, restaurant_id):
         'user_reservations': user_reservations,
         'order': order,  # Pass the order to the template
     }
-    return render(request, 'restaurants/restaurant-page.html', context)
+    return render(request, 'restaurants/public/restaurant-page.html', context)
     
 
-@login_required
+#@login_required
 @filter_complete_restaurants
 def user_homepage(request):
-    # Fetch user profile
-    user_profile = UserProfile.objects.get(user=request.user)
+    # Fetch user profile if authenticated
+    user_profile = None
+    if request.user.is_authenticated:
+        user_profile = UserProfile.objects.get(user=request.user)
 
-    # Get all filter options
     cities = Restaurant.objects.values_list('address__city', flat=True).distinct()
     tag_choices = Tag.objects.all()
 
@@ -127,10 +132,12 @@ def user_homepage(request):
     selected_tag = request.GET.get('tag', '')
 
     # Filter restaurants based on search query, city, and tags
-    filtered_restaurants = filter_restaurants(search_query, selected_city, selected_tag)
+    filtered_restaurants = filter_restaurants(search_query, selected_city, selected_tag, request.complete_restaurants)
 
-    # Get recommended restaurants
-    recommended_restaurants = generate_recommendations(request.user)
+    # Get recommended restaurants if authenticated
+    recommended_restaurants = None
+    if request.user.is_authenticated:
+        recommended_restaurants = generate_recommendations(request.user, request.complete_restaurants)
 
     context = {
         'recommended_restaurants': recommended_restaurants,
@@ -140,9 +147,10 @@ def user_homepage(request):
         'selected_city': selected_city,
         'selected_tag': selected_tag,
         'search_query': search_query,
+        'user_profile': user_profile,
     }
     
-    return render(request, 'restaurants/homepage.html', context)
+    return render(request, 'restaurants/public/homepage.html', context)
 
 @login_required
 def make_reservation(request, restaurant_id):
@@ -160,7 +168,7 @@ def make_reservation(request, restaurant_id):
     else:
         form = ReservationForm(user=request.user, restaurant=restaurant)
 
-    return render(request, 'restaurants/reservation.html', {
+    return render(request, 'restaurants/public/reservation.html', {
         'form': form,
         'restaurant': restaurant,
         'opening_hours': opening_hours,

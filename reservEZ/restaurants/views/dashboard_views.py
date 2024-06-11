@@ -18,7 +18,7 @@ def upload_logo(request):
             return redirect('restaurants:dashboard')
     else:
         form = LogoUploadForm(instance=restaurant)
-    return render(request, 'restaurants/upload-logo.html', {'form': form})
+    return render(request, 'restaurants/dashboard/upload-logo.html', {'form': form})
 
 @login_required
 @user_has_restaurant
@@ -31,7 +31,7 @@ def upload_banner(request):
             return redirect('restaurants:dashboard')
     else:
         form = BannerUploadForm(instance=restaurant)
-    return render(request, 'restaurants/upload-banner.html', {'form': form})
+    return render(request, 'restaurants/dashboard/upload-banner.html', {'form': form})
 
 @login_required
 @user_has_restaurant
@@ -54,7 +54,7 @@ def manage_orders(request):
         'orders': active_orders,
         'status_choices': STATUS_CHOICES,
     }
-    return render(request, 'restaurants/manage-orders.html', context)
+    return render(request, 'restaurants/dashboard/manage-orders.html', context)
 
 
 @login_required
@@ -82,7 +82,7 @@ def create_restaurant(request):
         address_form = AddressForm()
         restaurant_form = RestaurantForm(user=request.user)
 
-    return render(request, 'restaurants/restaurant-create.html', {
+    return render(request, 'restaurants/dashboard/restaurant-create.html', {
         'address_form': address_form,
         'restaurant_form': restaurant_form,
         'title': 'Register your restaurant'
@@ -99,7 +99,7 @@ def dashboard(request):
         'restaurant': restaurant,
         'incomplete_fields': incomplete_fields,
     }
-    return render(request, 'restaurants/dashboard.html', context)
+    return render(request, 'restaurants/dashboard/dashboard.html', context)
 
 @login_required
 @user_has_restaurant
@@ -115,7 +115,7 @@ def add_section(request):
             form = MenuSectionForm()
     else:
         form = MenuSectionForm()
-    return render(request, 'restaurants/menu-section.html', {'form': form, 'restaurant': restaurant})
+    return render(request, 'restaurants/dashboard/menu-section.html', {'form': form, 'restaurant': restaurant})
 
 @login_required
 @user_has_restaurant
@@ -129,7 +129,7 @@ def modify_section(request, section_id):
             return redirect('restaurants:add_section') 
     else:
         form = MenuSectionForm(instance=section)
-    return render(request, 'restaurants/menu-section.html', {'form': form, 'section': section, 'restaurant': restaurant})
+    return render(request, 'restaurants/dashboard/menu-section.html', {'form': form, 'section': section, 'restaurant': restaurant})
 
 @login_required
 @user_has_restaurant
@@ -139,7 +139,7 @@ def delete_section(request, section_id):
     if request.method == 'POST':
         section.delete()
         return redirect('restaurants:add_section') 
-    return render(request, 'restaurants/menu-section.html', {'section': section, 'restaurant': restaurant})
+    return render(request, 'restaurants/dashboard/menu-section.html', {'section': section, 'restaurant': restaurant})
 
 
 @login_required
@@ -156,7 +156,7 @@ def add_dish(request):
                 form = DishForm(restaurant=restaurant)
     else:
         form = DishForm(restaurant=restaurant)
-    return render(request, 'restaurants/menu-dishes.html', {'form': form, 'restaurant': restaurant})
+    return render(request, 'restaurants/dashboard/menu-dishes.html', {'form': form, 'restaurant': restaurant})
 
 @login_required
 @user_has_restaurant
@@ -170,7 +170,7 @@ def modify_dish(request, dish_id):
             return redirect('restaurants:add_dish')
     else:
         form = DishForm(instance=dish)
-    return render(request, 'restaurants/menu-dishes.html', {'form': form, 'restaurant': restaurant,'dish': dish})
+    return render(request, 'restaurants/dashboard/menu-dishes.html', {'form': form, 'restaurant': restaurant,'dish': dish})
 
 def delete_dish(request, dish_id):
     restaurant = Restaurant.objects.filter(owner=request.user).first()
@@ -178,7 +178,7 @@ def delete_dish(request, dish_id):
     if request.method == 'POST':
         dish.delete()
         return redirect('restaurants:add_dish')
-    return render(request, 'restaurants/menu-dishes.html', {'dish': dish, 'restaurant': restaurant})
+    return render(request, 'restaurants/dashboard/menu-dishes.html', {'dish': dish, 'restaurant': restaurant})
 
 @login_required
 @user_has_restaurant
@@ -199,7 +199,7 @@ def set_address(request):
     else:
         form = AddressForm(existing_address=existing_address)
 
-    return render(request, 'restaurants/address.html', {'form': form, 'restaurant': restaurant})
+    return render(request, 'restaurants/dashboard/address.html', {'form': form, 'restaurant': restaurant})
 
 def set_opening_hours(request):
     restaurant = Restaurant.objects.filter(owner=request.user).first()
@@ -229,7 +229,7 @@ def set_opening_hours(request):
         opening_hour = opening_hours.filter(weekday=weekday).first()
         organized_opening_hours[weekday] = opening_hour
 
-    return render(request, 'restaurants/openinghours.html', {'form': form, 'opening_hours': organized_opening_hours})
+    return render(request, 'restaurants/dashboard/openinghours.html', {'form': form, 'opening_hours': organized_opening_hours})
 
 @login_required
 @user_has_restaurant
@@ -241,13 +241,13 @@ def delete_opening_hour(request, pk):
         opening_hour.delete()
         return redirect('restaurants:set_opening_hours')  # or any other view you want to redirect to
 
-    return render(request, 'restaurants/openinghours.html', {'restaurant': restaurant})
+    return render(request, 'restaurants/dashboard/openinghours.html', {'restaurant': restaurant})
 
 @user_has_restaurant
 @login_required
 def view_all_reservations(request):
     reservations = Reservation.objects.filter(restaurant__owner=request.user).order_by('date', 'time')
-    return render(request, 'restaurants/restaurant-reservation.html', {'reservations': reservations})
+    return render(request, 'restaurants/dashboard/restaurant-reservation.html', {'reservations': reservations})
 
 @login_required
 @user_has_restaurant
@@ -268,7 +268,7 @@ def order_detail(request, order_id):
         'order_items': order_items,
         'status_choices': STATUS_CHOICES,
     }
-    return render(request, 'restaurants/order-detail.html', context)
+    return render(request, 'restaurants/dashboard/order-detail.html', context)
 
 @login_required
 @user_has_restaurant
@@ -280,7 +280,7 @@ def retired_orders(request):
         'restaurant': restaurant,
         'orders': retired_orders,
     }
-    return render(request, 'restaurants/retired-orders.html', context)
+    return render(request, 'restaurants/dashboard/retired-orders.html', context)
 
 @login_required
 @user_has_restaurant
@@ -295,9 +295,7 @@ def manage_tags(request):
     else:
         form = RestaurantTagForm(instance=restaurant)
     
-    return render(request, 'restaurants/tags.html', {'form': form, 'restaurant': restaurant})
-
-
+    return render(request, 'restaurants/dashboard/tags.html', {'form': form, 'restaurant': restaurant})
 
 @login_required
 def delete_reservation(request, reservation_id):
@@ -313,4 +311,4 @@ def delete_reservation(request, reservation_id):
             return redirect('restaurants:dashboard')  # Redirect to the dashboard or any other page
         else:
             # Handle GET request, render a confirmation page if needed
-            return render(request, 'restaurants/delete_reservation.html', {'reservation': reservation})
+            return render(request, 'restaurants/dashboard/delete_reservation.html', {'reservation': reservation})

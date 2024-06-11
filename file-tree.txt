@@ -1,0 +1,216 @@
+[01;34mreservEZ/[00m
+├── [01;34maccounts[00m
+│   ├── __init__.py
+│   ├── [01;34m__pycache__[00m
+│   │   ├── __init__.cpython-312.pyc
+│   │   ├── admin.cpython-312.pyc
+│   │   ├── apps.cpython-312.pyc
+│   │   ├── backends.cpython-312.pyc
+│   │   ├── consumers.cpython-312.pyc
+│   │   ├── context_processors.cpython-312.pyc
+│   │   ├── forms.cpython-312.pyc
+│   │   ├── models.cpython-312.pyc
+│   │   ├── routing.cpython-312.pyc
+│   │   ├── signals.cpython-312.pyc
+│   │   ├── urls.cpython-312.pyc
+│   │   └── views.cpython-312.pyc
+│   ├── admin.py
+│   ├── apps.py
+│   ├── context_processors.py
+│   ├── forms.py
+│   ├── [01;34mmigrations[00m
+│   │   ├── 0001_initial.py
+│   │   ├── 0002_rename_customuser_user.py
+│   │   ├── 0003_rename_name_user_username.py
+│   │   ├── 0004_alter_user_options_alter_user_managers_and_more.py
+│   │   ├── 0005_remove_user_cell_number_alter_user_groups_and_more.py
+│   │   ├── 0006_alter_address_user_restaurant_user_delete_user.py
+│   │   ├── 0007_remove_address_address_address_city_address_country_and_more.py
+│   │   ├── 0008_remove_address_user_alter_address_city_and_more.py
+│   │   ├── 0009_notification.py
+│   │   ├── __init__.py
+│   │   └── [01;34m__pycache__[00m
+│   │       ├── 0001_initial.cpython-312.pyc
+│   │       ├── 0002_rename_customuser_user.cpython-312.pyc
+│   │       ├── 0003_rename_name_user_username.cpython-312.pyc
+│   │       ├── 0004_alter_user_options_alter_user_managers_and_more.cpython-312.pyc
+│   │       ├── 0005_remove_user_cell_number_alter_user_groups_and_more.cpython-312.pyc
+│   │       ├── 0006_alter_address_user_restaurant_user_delete_user.cpython-312.pyc
+│   │       ├── 0007_remove_address_address_address_city_address_country_and_more.cpython-312.pyc
+│   │       ├── 0008_remove_address_user_alter_address_city_and_more.cpython-312.pyc
+│   │       ├── 0009_notification.cpython-312.pyc
+│   │       └── __init__.cpython-312.pyc
+│   ├── models.py
+│   ├── [01;34msocket[00m
+│   │   ├── __init__.py
+│   │   ├── [01;34m__pycache__[00m
+│   │   │   ├── __init__.cpython-312.pyc
+│   │   │   ├── consumers.cpython-312.pyc
+│   │   │   ├── routing.cpython-312.pyc
+│   │   │   └── signals.cpython-312.pyc
+│   │   ├── consumers.py
+│   │   ├── routing.py
+│   │   └── signals.py
+│   ├── [01;34mstatic[00m
+│   │   └── [01;34maccounts[00m
+│   │       └── [01;34mcss[00m
+│   │           └── styles.css
+│   ├── [01;34mtemplates[00m
+│   │   └── [01;34maccounts[00m
+│   │       ├── dashboard.html
+│   │       ├── login.html
+│   │       ├── logout.html
+│   │       ├── [01;34mpartials[00m
+│   │       │   └── notifications.html
+│   │       ├── profile.html
+│   │       ├── registration.html
+│   │       ├── user-address.html
+│   │       └── user-info.html
+│   ├── urls.py
+│   └── views.py
+├── [01;32mmanage.py[00m
+├── [01;34mmedia[00m
+│   ├── [01;34mdefault[00m
+│   │   ├── [01;35mbanner.png[00m
+│   │   └── [01;35mlogo.png[00m
+│   └── [01;34muser_deborah[00m
+│       ├── [01;35m1.4bbec3fd7359760e5cd86d0c586ff3e3.jpg[00m
+│       ├── [01;35m1.4bbec3fd7359760e5cd86d0c586ff3e3_qqgOg4z.jpg[00m
+│       ├── 1.PNG
+│       ├── [01;35m1f65b00c-69f1-4d8c-a8af-39c721f1515c.jpg[00m
+│       ├── [01;35m2Q.png[00m
+│       ├── Ristorante-Quattro-Sensi-2.webp
+│       ├── Ristorante-Quattro-Sensi-2_DcA06ig.webp
+│       ├── banner.jfif
+│       ├── der.PNG
+│       └── [01;35mlogo.jpg[00m
+├── note.md
+├── requirements.txt
+├── [01;34mreservez[00m
+│   ├── __init__.py
+│   ├── [01;34m__pycache__[00m
+│   │   ├── __init__.cpython-312.pyc
+│   │   ├── asgi.cpython-312.pyc
+│   │   ├── settings.cpython-312.pyc
+│   │   ├── urls.cpython-312.pyc
+│   │   ├── views.cpython-312.pyc
+│   │   └── wsgi.cpython-312.pyc
+│   ├── asgi.py
+│   ├── settings.py
+│   ├── urls.py
+│   ├── views.py
+│   └── wsgi.py
+├── [01;34mrestaurants[00m
+│   ├── __init__.py
+│   ├── [01;34m__pycache__[00m
+│   │   ├── __init__.cpython-312.pyc
+│   │   ├── admin.cpython-312.pyc
+│   │   ├── apps.cpython-312.pyc
+│   │   ├── forms.cpython-312.pyc
+│   │   ├── models.cpython-312.pyc
+│   │   ├── urls.cpython-312.pyc
+│   │   └── views.cpython-312.pyc
+│   ├── admin.py
+│   ├── apps.py
+│   ├── [01;34mforms[00m
+│   │   ├── [01;34m__pycache__[00m
+│   │   │   ├── dashboard_forms.cpython-312.pyc
+│   │   │   └── restaurants_forms.cpython-312.pyc
+│   │   ├── dashboard_forms.py
+│   │   └── restaurants_forms.py
+│   ├── [01;34mmigrations[00m
+│   │   ├── 0001_initial.py
+│   │   ├── 0002_address_alter_restaurant_address.py
+│   │   ├── 0003_alter_address_unique_together.py
+│   │   ├── 0004_dish_ingredient_menu_menusection_dish_section.py
+│   │   ├── 0005_remove_menu_name.py
+│   │   ├── 0006_delete_ingredient.py
+│   │   ├── 0007_rename_name_dish_dname_rename_name_menusection_sname.py
+│   │   ├── 0008_alter_menusection_sname.py
+│   │   ├── 0009_alter_dish_unique_together.py
+│   │   ├── 0010_openinghours.py
+│   │   ├── 0011_alter_menusection_sname_and_more.py
+│   │   ├── 0012_reservation.py
+│   │   ├── 0013_alter_reservation_unique_together.py
+│   │   ├── 0014_reservation_number_of_people.py
+│   │   ├── 0015_order_orderitem.py
+│   │   ├── 0016_order_status_activeorderitem_delete_orderitem.py
+│   │   ├── 0017_alter_order_status.py
+│   │   ├── 0018_tag_restaurant_tags.py
+│   │   ├── 0019_restaurant_banner_restaurant_logo.py
+│   │   ├── __init__.py
+│   │   └── [01;34m__pycache__[00m
+│   │       ├── 0001_initial.cpython-312.pyc
+│   │       ├── 0002_address_alter_restaurant_address.cpython-312.pyc
+│   │       ├── 0003_alter_address_unique_together.cpython-312.pyc
+│   │       ├── 0004_dish_ingredient_menu_menusection_dish_section.cpython-312.pyc
+│   │       ├── 0005_remove_menu_name.cpython-312.pyc
+│   │       ├── 0006_delete_ingredient.cpython-312.pyc
+│   │       ├── 0007_rename_name_dish_dname_rename_name_menusection_sname.cpython-312.pyc
+│   │       ├── 0008_alter_menusection_sname.cpython-312.pyc
+│   │       ├── 0009_alter_dish_unique_together.cpython-312.pyc
+│   │       ├── 0010_openinghours.cpython-312.pyc
+│   │       ├── 0011_alter_menusection_sname_and_more.cpython-312.pyc
+│   │       ├── 0012_reservation.cpython-312.pyc
+│   │       ├── 0013_alter_reservation_unique_together.cpython-312.pyc
+│   │       ├── 0014_reservation_number_of_people.cpython-312.pyc
+│   │       ├── 0015_order_orderitem.cpython-312.pyc
+│   │       ├── 0016_order_status_activeorderitem_delete_orderitem.cpython-312.pyc
+│   │       ├── 0017_alter_order_status.cpython-312.pyc
+│   │       ├── 0018_tag_restaurant_tags.cpython-312.pyc
+│   │       ├── 0019_restaurant_banner_restaurant_logo.cpython-312.pyc
+│   │       └── __init__.cpython-312.pyc
+│   ├── models.py
+│   ├── [01;34mstatic[00m
+│   │   └── [01;34mrestaurants[00m
+│   │       └── dashboard.css
+│   ├── [01;34mtemplates[00m
+│   │   └── [01;34mrestaurants[00m
+│   │       ├── address.html
+│   │       ├── dashboard.html
+│   │       ├── homepage.html
+│   │       ├── manage-orders.html
+│   │       ├── menu-dishes.html
+│   │       ├── menu-section.html
+│   │       ├── menu.html
+│   │       ├── openinghours.html
+│   │       ├── order-detail.html
+│   │       ├── reservation.html
+│   │       ├── restaurant-create.html
+│   │       ├── restaurant-list.html
+│   │       ├── restaurant-page.html
+│   │       ├── restaurant-reservation.html
+│   │       ├── retired-orders.html
+│   │       ├── tags.html
+│   │       ├── upload-banner.html
+│   │       └── upload-logo.html
+│   ├── tests.py
+│   ├── urls.py
+│   ├── [01;34mutils[00m
+│   │   ├── __init__.py
+│   │   ├── [01;34m__pycache__[00m
+│   │   │   ├── __init__.cpython-312.pyc
+│   │   │   ├── choices.cpython-312.pyc
+│   │   │   ├── constants.cpython-312.pyc
+│   │   │   ├── decorators.cpython-312.pyc
+│   │   │   └── functions.cpython-312.pyc
+│   │   ├── constants.py
+│   │   ├── decorators.py
+│   │   └── functions.py
+│   └── [01;34mviews[00m
+│       ├── __init__.py
+│       ├── [01;34m__pycache__[00m
+│       │   ├── __init__.cpython-312.pyc
+│       │   ├── dashboard_views.cpython-312.pyc
+│       │   └── restaurant_views.cpython-312.pyc
+│       ├── dashboard_views.py
+│       └── restaurant_views.py
+├── [01;34mstatic[00m
+│   └── [01;34mcss[00m
+│       └── styles.css
+└── [01;34mtemplates[00m
+    ├── 404.html
+    ├── base.html
+    └── dashboard.html
+
+34 directories, 179 files

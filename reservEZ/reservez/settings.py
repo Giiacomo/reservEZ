@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'django_extensions',
     'daphne',
     'channels',
     'django.contrib.admin',
@@ -94,7 +95,10 @@ DATABASES = {
         "USER": os.environ.get('DB_USER'),
         "PASSWORD": os.environ.get('DB_PSW'),
         "HOST": "127.0.0.1",
-        "PORT": os.environ.get('DB_PORT')
+        "PORT": os.environ.get('DB_PORT'),
+        "TEST": {
+            "NAME": "test_reservez",
+        },
     }
 }
 

@@ -68,12 +68,16 @@
                                 <div class="col-md-4 text-right">
                                     <p><strong>{{ dish.price }}</strong></p>
                                     <!-- Add form to specify quantity and add to order -->
+                                    {% if request.user.is_authenticated %}
                                     <form method="post" action="{% url 'restaurants:add_to_order' restaurant.id dish.id %}">
                                         {% csrf_token %}
                                         <input type="hidden" name="dish_id" value="{{ dish.id }}">
                                         <input type="number" name="quantity" value="1" min="1" class="form-control d-inline w-50" {% if order and order.status != 'NS' %}disabled{% endif %}>
                                         <button type="submit" class="btn btn-primary" {% if order and order.status != 'NS' %}disabled{% endif %}><i class="fas fa-cart-plus"></i></button>
                                     </form>
+                                    {% else %}
+                                    <p>Login to order</p>
+                                    {% endif %}
                                 </div>
                             </div>
                             <hr>
@@ -98,8 +102,12 @@
             <div class="card border-primary mb-3">
                 <div class="card-header">Reservation</div>
                 <div class="card-body">
+                    {% if request.user.is_authenticated %}
                     <p class="card-text">Make a reservation for this restaurant.</p>
                     <a href="{% url 'restaurants:make_reservation' restaurant.id %}" class="btn btn-primary">Reserve Now</a>
+                    {% else %}
+                    <p class="card-text">Login to make a reservation</p>
+                    {% endif %}
                 </div>
                 {% if user_reservations %}
                 <div class="card-body">
@@ -158,3 +166,4 @@
     </div>
 </div>
 {% endblock %}
+

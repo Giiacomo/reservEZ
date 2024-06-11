@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from restaurants.models import Reservation, Order
 
 class Notification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
@@ -19,6 +18,9 @@ class Address(models.Model):
     country = models.CharField(max_length=100)
     postal_code = models.CharField(max_length=20)
 
+    class Meta:
+        unique_together = ('street', 'city', 'state', 'country')
+
     def __str__(self):
         return f"{self.street}, {self.city}, {self.country}"
 
@@ -28,3 +30,4 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.username
+

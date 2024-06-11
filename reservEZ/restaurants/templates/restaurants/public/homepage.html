@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block title %}
 Home
 {% endblock %}
@@ -30,6 +31,7 @@ Home
         </div>
     </div>
 
+    {% if user.is_authenticated %}
     <div class="row">
         <!-- Recommended Restaurants Section -->
         <div class="col-12 mb-4">
@@ -80,6 +82,8 @@ Home
             </div>
         </div>
     </div>
+    {% endif %}
+    
     <div class="row">
         <!-- All Restaurants Section -->
         <div class="col-12 mb-4">

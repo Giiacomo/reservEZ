@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from .utils.constants import WEEKDAYS, STATUS_CHOICES
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
-
+from accounts.models import Address
 class OpeningHours(models.Model):
     restaurant = models.ForeignKey('Restaurant', on_delete=models.CASCADE, related_name='opening_hours')
     weekday = models.IntegerField(choices=WEEKDAYS)
@@ -16,19 +16,6 @@ class OpeningHours(models.Model):
 
     def __str__(self):
         return f"{self.get_weekday_display()}: {self.opening_time} - {self.closing_time}"
-
-class Address(models.Model):
-    street = models.CharField(max_length=100)
-    city = models.CharField(max_length=100)
-    state = models.CharField(max_length=100)
-    country = models.CharField(max_length=100)
-    postal_code = models.CharField(max_length=20)
-
-    class Meta:
-        unique_together = ('street', 'city', 'state', 'country')
-
-    def __str__(self):
-        return f"{self.street}, {self.city}, {self.country}"
 
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)
