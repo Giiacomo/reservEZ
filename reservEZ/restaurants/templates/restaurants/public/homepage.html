@@ -31,9 +31,9 @@ Home
         </div>
     </div>
 
-    {% if user.is_authenticated %}
+    {% if user.is_authenticated and recommended_restaurants %}
     <div class="row">
-        <!-- Recommended Restaurants Section -->
+        
         <div class="col-12 mb-4">
             <h2>Recommended Restaurants</h2>
             <div class="row">
@@ -73,7 +73,7 @@ Home
                                 {% endfor %}
                             </p>
                             <div class="mt-auto">
-                                <!-- Add any footer content here if needed -->
+                                
                             </div>
                         </div>
                     </div>
@@ -85,7 +85,7 @@ Home
     {% endif %}
     
     <div class="row">
-        <!-- All Restaurants Section -->
+        
         <div class="col-12 mb-4">
             <h2>All Restaurants</h2>
             <div class="row">
@@ -97,19 +97,13 @@ Home
                                 {% if restaurant.banner %}
                                 <img src="{{ restaurant.banner.url }}" class="banner-img" alt="{{ restaurant.name }} Banner">
                                 {% else %}
-                                <!-- Use default banner image -->
+                                
                                 <img src="{{ BASE_DIR }}/media/default/banner.png" class="banner-img" alt="{{ restaurant.name }} Banner">
                                 {% endif %}
-                                {% if restaurant.logo %}
                                 <div class="logo-container">
                                     <img src="{{ restaurant.logo.url }}" class="logo-img" alt="{{ restaurant.name }} Logo">
                                 </div>
-                                {% else %}
-                                <!-- Use default logo image -->
-                                <div class="logo-container">
-                                    <img src="{{ BASE_DIR }}/media/default/logo.png" class="logo-img" alt="{{ restaurant.name }} Logo">
-                                </div>
-                                {% endif %}
+
                             </div>
                         </div>
                         
@@ -134,7 +128,7 @@ Home
                                 {% endfor %}
                             </p>
                             <div class="mt-auto">
-                                <!-- Add any footer content here if needed -->
+                                
                             </div>
                         </div>
                     </div>

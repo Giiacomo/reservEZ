@@ -5,10 +5,10 @@ from ..models import Restaurant, Tag
 
 
 def generate_recommendations(user, complete_restaurants):
-    # Fetch user's city from the address associated with the user profile
+    
     user_city = user.profile.address.city if user.profile.address else None
 
-    # Get user's favorite tags based on recent orders/reservations
+    
     favorite_tags = Tag.objects.filter(
         Q(restaurant__orders__user=user) | Q(restaurant__reservations__user=user)
     ).annotate(
@@ -18,7 +18,7 @@ def generate_recommendations(user, complete_restaurants):
     )[:3]
     favorite_tag_ids = [tag.id for tag in favorite_tags]
 
-    # Get recent restaurants where the user ordered or made reservations
+    
     recent_restaurants = Restaurant.objects.filter(
         Q(orders__user=user) | Q(reservations__user=user)
     ).order_by(
@@ -26,22 +26,22 @@ def generate_recommendations(user, complete_restaurants):
     ).distinct()[:3]
     recent_restaurant_ids = [restaurant.id for restaurant in recent_restaurants]
 
-    # Filter the complete restaurants based on the user's city
+    
     filtered_restaurants = [
         restaurant for restaurant in complete_restaurants 
         if restaurant.address.city == user_city
     ]
 
-    # Further filter the complete restaurants based on favorite tags
+    
     filtered_restaurants = [
         restaurant for restaurant in filtered_restaurants 
         if any(tag.id in favorite_tag_ids for tag in restaurant.tags.all())
     ]
 
-    # Limit the number of recommendations to 3
+    
     recommendations = filtered_restaurants[:3]
 
-    # Annotate and sort the filtered restaurants based on recent interactions
+    
     for restaurant in recommendations:
         restaurant.weight = 2 if restaurant.id in recent_restaurant_ids else 1
     
@@ -85,18 +85,36 @@ def get_incomplete_fields(restaurant):
 
 
 
-def filter_restaurants(search_query='', selected_city='', selected_tag='', filtered_restaurants=None):
+def filter_restaurants(search_query='', selected_city='', selected_tag='', user_city=None):
+    filtered_restaurants = Restaurant.objects.all()
 
+    
     if search_query:
         filtered_restaurants = filtered_restaurants.filter(
             Q(name__icontains=search_query) | 
             Q(description__icontains=search_query)
         )
 
+    
     if selected_city:
         filtered_restaurants = filtered_restaurants.filter(address__city=selected_city)
 
+    
     if selected_tag:
         filtered_restaurants = filtered_restaurants.filter(tags__id=selected_tag)
 
-    return filtered_restaurants
+    
+    restaurants = list(filtered_restaurants)
+    for restaurant in restaurants:
+        restaurant.is_open = restaurant.is_open_now()
+        restaurant.is_in_user_city = restaurant.address.city == user_city
+        print(restaurant.is_in_user_city)
+    sorted_restaurants = sorted(
+        restaurants,
+        key=lambda r: (
+            not r.is_in_user_city,  
+            not r.is_open,          
+        )
+    )
+    print(sorted_restaurants)
+    return sorted_restaurants

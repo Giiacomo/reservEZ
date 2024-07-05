@@ -41,22 +41,22 @@ def get_time_choices(request):
 @login_required
 def add_to_order(request, restaurant_id, dish_id):
     if request.method == 'POST':
-        quantity = int(request.POST.get('quantity', 1))  # Get the quantity from the form
+        quantity = int(request.POST.get('quantity', 1))  
         dish = get_object_or_404(Dish, pk=dish_id)
         order, _ = Order.objects.get_or_create(restaurant_id=restaurant_id, user=request.user, status='NS')
 
-        # Check if the dish is already in the order, update the quantity
+        
         active_item = ActiveOrderItem.objects.filter(order=order, dish=dish).first()
         if active_item:
             active_item.quantity += quantity
             active_item.save()
         else:
-            # Create a new order item
+            
             order_item = ActiveOrderItem.objects.create(order=order, dish=dish, quantity=quantity)
 
         return redirect('restaurants:restaurant_page', restaurant_id=restaurant_id)
     else:
-        # Handle GET request or invalid form data
+        
         return redirect('restaurants:restaurant_page', restaurant_id=restaurant_id)
 
 @login_required
@@ -82,11 +82,11 @@ def delete_from_order(request, restaurant_id, item_id):
 def submit_order(request, restaurant_id):
     try:
         order = Order.objects.get(restaurant_id=restaurant_id, user=request.user, status='NS')
-        order.status = 'AW'  # Set status to 'AW' (Awaiting Acceptance)
+        order.status = 'AW'  
         order.save()
         return redirect('restaurants:restaurant_page', restaurant_id=restaurant_id)
     except Order.DoesNotExist:
-        # Handle the case where there is no active order or the order is already submitted
+        
         return redirect('restaurants:restaurant_page', restaurant_id=restaurant_id)
 
 def restaurant_list(request):
@@ -94,12 +94,10 @@ def restaurant_list(request):
     return render(request, 'restaurants/public/restaurant-list.html', {'restaurants': restaurants, 'title': 'List of restaurants:'})
 
 @check_restaurant_complete
-#@login_required
 def restaurant_page(request, restaurant_id):
     restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
     menu_sections = MenuSection.objects.filter(menu__restaurant=restaurant)
-    
-    # Check if user is authenticated before accessing user-related data
+
     user_reservations = None
     order = None
     if request.user.is_authenticated:
@@ -110,15 +108,13 @@ def restaurant_page(request, restaurant_id):
         'restaurant': restaurant,
         'menu_sections': menu_sections,
         'user_reservations': user_reservations,
-        'order': order,  # Pass the order to the template
+        'order': order,  
     }
     return render(request, 'restaurants/public/restaurant-page.html', context)
     
 
-#@login_required
 @filter_complete_restaurants
 def user_homepage(request):
-    # Fetch user profile if authenticated
     user_profile = None
     if request.user.is_authenticated:
         user_profile = UserProfile.objects.get(user=request.user)
@@ -126,18 +122,23 @@ def user_homepage(request):
     cities = Restaurant.objects.values_list('address__city', flat=True).distinct()
     tag_choices = Tag.objects.all()
 
-    # Get filter values from request
+    
     search_query = request.GET.get('q', '')
     selected_city = request.GET.get('city', '')
     selected_tag = request.GET.get('tag', '')
 
-    # Filter restaurants based on search query, city, and tags
-    filtered_restaurants = filter_restaurants(search_query, selected_city, selected_tag, request.complete_restaurants)
+    user_city = None
+    if request.user.is_authenticated:
+        user_profile = UserProfile.objects.get(user=request.user)
+        user_city = user_profile.address.city if user_profile.address else None
 
-    # Get recommended restaurants if authenticated
+    filtered_restaurants = filter_restaurants(search_query, selected_city, selected_tag, user_city)
+    
+    for restaurant in filtered_restaurants:
+        restaurant.is_open = restaurant.is_open_now()
     recommended_restaurants = None
     if request.user.is_authenticated:
-        recommended_restaurants = generate_recommendations(request.user, request.complete_restaurants)
+        recommended_restaurants = generate_recommendations(request.user, filtered_restaurants)
 
     context = {
         'recommended_restaurants': recommended_restaurants,
@@ -162,7 +163,7 @@ def make_reservation(request, restaurant_id):
             reservation = form.save(commit=False)
             reservation.user = request.user
             reservation.restaurant = restaurant
-            reservation.date = form.cleaned_data['date']  # Ensure the date is set from cleaned_data
+            reservation.date = form.cleaned_data['date']  
             reservation.save()
             return redirect('restaurants:restaurant_page', restaurant_id=restaurant.id)
     else:

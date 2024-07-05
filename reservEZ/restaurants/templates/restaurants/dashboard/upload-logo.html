@@ -2,6 +2,19 @@
 {% load static %}
 
 {% block content_dashboard %}
+{% load crispy_forms_field %}
+
+<div class="fileupload fileupload-new" data-provides="fileupload">
+    <div class="row">
+        <div class="col-md-12">
+            <img id="output" class="img-thumbnail img-fluid w-100" {% if field.value %} src="{{ field.value.url }}"  {% endif %} />
+            {% if field.value %}
+                <input type="checkbox" name="{{ field.name }}-clear" id="{{ field.name }}-clear_id">
+                <label for="{{field.name}}-clear_id">Clear</label><br>
+            {% endif %}
+        </div>
+    </div>
+</div>
 <h2>Upload Logo</h2>
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}

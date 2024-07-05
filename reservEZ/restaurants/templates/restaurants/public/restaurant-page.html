@@ -24,7 +24,7 @@
                         <div class="col-md-10">
                             <h5 class="card-title">{{ restaurant.name }}</h5>
                             <p class="card-text">{{ restaurant.description }}</p>
-                            <!-- Address -->
+                        
                             <p><strong>Address:</strong> {{ restaurant.address.street }}, {{ restaurant.address.city }}, {{ restaurant.address.state }}, {{ restaurant.address.country }}, {{ restaurant.address.postal_code }}</p>
                             <p><strong>Opening Hours:</strong></p>
                             <ul>
@@ -67,7 +67,7 @@
                                 </div>
                                 <div class="col-md-4 text-right">
                                     <p><strong>{{ dish.price }}</strong></p>
-                                    <!-- Add form to specify quantity and add to order -->
+                                
                                     {% if request.user.is_authenticated %}
                                     <form method="post" action="{% url 'restaurants:add_to_order' restaurant.id dish.id %}">
                                         {% csrf_token %}

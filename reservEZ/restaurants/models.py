@@ -2,17 +2,31 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from .utils.constants import WEEKDAYS, STATUS_CHOICES
+from django.db.models import Sum
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from accounts.models import Address
+import os, random
+from django.conf import settings  # Import settings to get BASE_DIR
+from datetime import datetime
+
 class OpeningHours(models.Model):
     restaurant = models.ForeignKey('Restaurant', on_delete=models.CASCADE, related_name='opening_hours')
     weekday = models.IntegerField(choices=WEEKDAYS)
     opening_time = models.TimeField()
     closing_time = models.TimeField()
+    available_seats = models.IntegerField(default=0)  # Aggiunto campo per posti disponibili
 
     class Meta:
         unique_together = ('restaurant', 'weekday')
+
+    def update_available_seats(self):
+        reservations = Reservation.objects.filter(restaurant=self.restaurant, date__week_day=self.weekday)
+        total_reserved_seats = reservations.aggregate(total_seats=Sum('number_of_people'))['total_seats']
+        if total_reserved_seats is None:
+            total_reserved_seats = 0
+        self.available_seats = self.restaurant.max_seats - total_reserved_seats
+        self.save()
 
     def __str__(self):
         return f"{self.get_weekday_display()}: {self.opening_time} - {self.closing_time}"
@@ -35,11 +49,37 @@ class Restaurant(models.Model):
     tags = models.ManyToManyField(Tag, blank=True)
     banner = models.ImageField(upload_to=user_directory_path, null=True, blank=True)
     logo = models.ImageField(upload_to=user_directory_path, null=True, blank=True)
+    max_seats = models.IntegerField()  # Aggiunto campo per il numero massimo di posti
 
     def get_opening_hours(self):
         return self.opening_hours.all().order_by('weekday')
 
+    def is_open_now(self):
+        now = datetime.now().time()
+        current_weekday = datetime.now().weekday()
+        opening_hours = self.get_opening_hours()
+        return any(
+            oh.weekday == current_weekday and oh.opening_time <= now < oh.closing_time
+            for oh in opening_hours
+        )
+
     def save(self, *args, **kwargs):
+
+        if not self.banner:
+            default_banners_path = os.path.join(settings.BASE_DIR, 'media/default/banners')
+            if os.path.exists(default_banners_path):
+                default_banners = os.listdir(default_banners_path)
+                if default_banners:
+                    self.banner.name = os.path.join('default/banners', random.choice(default_banners))
+
+            # Set default logo if not provided
+        if not self.logo:
+            default_logos_path = os.path.join(settings.BASE_DIR, 'media/default/logos')
+            if os.path.exists(default_logos_path):
+                default_logos = os.listdir(default_logos_path)
+                if default_logos:
+                    self.logo.name = os.path.join('default/logos', random.choice(default_logos))
+
         if self.pk:
             existing_menu = self.menu.first()
             existing_opening_hours = self.opening_hours.all()
@@ -92,8 +132,6 @@ class Dish(models.Model):
     def __str__(self):
         return self.dname
 
-
-
 class Reservation(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='reservations')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reservations')
@@ -127,7 +165,6 @@ class ActiveOrderItem(models.Model):
 
     def __str__(self):
         return f"{self.quantity}x {self.dish.dname} in order {self.order}"
-
 
 @receiver(post_save, sender=ActiveOrderItem)
 @receiver(post_delete, sender=ActiveOrderItem)

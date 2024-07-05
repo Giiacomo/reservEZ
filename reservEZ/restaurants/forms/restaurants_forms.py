@@ -4,6 +4,8 @@ from crispy_forms.layout import Layout, Fieldset, Div, Submit
 from ..models import Reservation, ActiveOrderItem, Restaurant, Tag
 from django.utils import timezone
 from datetime import datetime, timedelta
+from django.db.models import Sum
+
 
 
 
@@ -52,13 +54,10 @@ class ReservationForm(forms.ModelForm):
         cleaned_data = super().clean()
         date_str = cleaned_data.get('weekday')
         time = cleaned_data.get('time')
+        number_of_people = cleaned_data.get('number_of_people')
 
         if date_str and time:
-            try:
-                date = datetime.strptime(date_str, '%Y-%m-%d').date()
-            except ValueError:
-                raise forms.ValidationError('Invalid date format.')
-
+            date = datetime.strptime(date_str, '%Y-%m-%d').date()
             weekday = date.weekday()
             opening_hours = self.restaurant.opening_hours.filter(weekday=weekday).first()
             if not opening_hours:
@@ -74,6 +73,14 @@ class ReservationForm(forms.ModelForm):
             # Check if the user has already made a reservation for this day at the same restaurant
             if Reservation.objects.filter(restaurant=self.restaurant, user=self.user, date=date).exists():
                 raise forms.ValidationError('You can only make one reservation per day at this restaurant.')
+
+            # Check available seats
+            total_reserved_seats = Reservation.objects.filter(restaurant=self.restaurant, date=date).aggregate(total_seats=Sum('number_of_people'))['total_seats']
+            if total_reserved_seats is None:
+                total_reserved_seats = 0
+            available_seats = self.restaurant.max_seats - total_reserved_seats
+            if number_of_people > available_seats:
+                raise forms.ValidationError('There are no available seats for this time slot.')
 
             # Set the date field in the cleaned data
             cleaned_data['date'] = date

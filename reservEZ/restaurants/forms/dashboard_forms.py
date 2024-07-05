@@ -194,3 +194,19 @@ class DishForm(forms.ModelForm):
     class Meta:
         model = Dish
         fields = ['dname', 'description', 'price', 'section']
+
+
+class SeatsForm(forms.ModelForm):
+    max_seats = forms.IntegerField(min_value=1, label='Number of People', initial=1)
+
+    class Meta:
+        model = Restaurant
+        fields = ['max_seats']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            'max_seats',
+            Submit('submit', 'Submit', css_class='btn btn-success')
+        )

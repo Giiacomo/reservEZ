@@ -6,6 +6,10 @@
     --bs-success: #488a4b;
 }
 
+a {
+    color: var(--blu)
+}
+
 .text-primary-c {
     color: var(--blu) !important
 }

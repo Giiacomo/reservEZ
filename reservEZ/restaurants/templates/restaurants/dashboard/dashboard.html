@@ -51,6 +51,7 @@
 </style>
 
 <div class="nav-section">
+    <h2 class="my-3"><a href="{%url 'restaurants:dashboard'%}">Dashboard</a></h2>
     <h3 class="my-3">Menu</h3>
     <ul class="nav flex-column">
         <li class="nav-item">
@@ -84,6 +85,9 @@
     <ul class="nav flex-column">
         <li class="nav-item">
             <a class="nav-link" href="{% url 'restaurants:set_address' %}">Address</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'restaurants:set_seats' %}">Max seats</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="{% url 'restaurants:set_opening_hours' %}">Opening Hours</a>

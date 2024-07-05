@@ -1,0 +1,12 @@
+<!-- seats_form.html -->
+{% extends 'restaurants/dashboard/dashboard.html' %}
+{% load crispy_forms_tags %}
+
+{% block content_dashboard %}
+    <h2>Set Maximum Seats</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-success">Submit</button>
+    </form>
+{% endblock %}

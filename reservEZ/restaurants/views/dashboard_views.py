@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from ..forms.dashboard_forms import RestaurantForm, RestaurantTagForm, AddressForm, DishForm, MenuSectionForm, OpeningHoursForm, LogoUploadForm, BannerUploadForm
+from ..forms.dashboard_forms import RestaurantForm, RestaurantTagForm, AddressForm, DishForm, MenuSectionForm, OpeningHoursForm, LogoUploadForm, BannerUploadForm, SeatsForm
 from ..models import Menu, Restaurant, OpeningHours, MenuSection, Dish, Reservation, Order, ActiveOrderItem
 from ..utils.decorators import user_has_restaurant
 from ..utils.constants import WEEKDAYS, STATUS_CHOICES
@@ -65,16 +65,16 @@ def create_restaurant(request):
         
         if address_form.is_valid() and restaurant_form.is_valid():
             with transaction.atomic():
-                # Save the Address
+            
                 address = address_form.save()
 
-                # Save the Restaurant
+            
                 restaurant = restaurant_form.save(commit=False)
                 restaurant.address = address
                 restaurant.owner = request.user
-                restaurant.save()  # Save the Restaurant to get an ID
+                restaurant.save() 
 
-                # Save the menu
+            
                 menu = Menu.objects.create(restaurant=restaurant)
 
             return redirect('restaurants:dashboard')
@@ -185,7 +185,7 @@ def delete_dish(request, dish_id):
 def set_address(request):
     restaurant = Restaurant.objects.filter(owner=request.user).first()
 
-    # Get the existing address for the user's restaurant, if it exists
+
     existing_address = restaurant.address if restaurant else None
 
     if request.method == 'POST':
@@ -239,7 +239,7 @@ def delete_opening_hour(request, pk):
 
     if request.method == 'POST':
         opening_hour.delete()
-        return redirect('restaurants:set_opening_hours')  # or any other view you want to redirect to
+        return redirect('restaurants:set_opening_hours') 
 
     return render(request, 'restaurants/dashboard/openinghours.html', {'restaurant': restaurant})
 
@@ -291,24 +291,33 @@ def manage_tags(request):
         form = RestaurantTagForm(request.POST, instance=restaurant)
         if form.is_valid():
             form.save()
-            return redirect('restaurants:manage_tags')  # Assuming you have a URL named 'restaurants:restaurant_page'
+            return redirect('restaurants:manage_tags') 
     else:
         form = RestaurantTagForm(instance=restaurant)
     
     return render(request, 'restaurants/dashboard/tags.html', {'form': form, 'restaurant': restaurant})
 
 @login_required
+@user_has_restaurant
 def delete_reservation(request, reservation_id):
-    # Assuming reservation_id is the ID of the reservation to be deleted
     reservation = get_object_or_404(Reservation, pk=reservation_id)
 
-    # Check if the user owns the restaurant associated with the reservation
     if request.user == reservation.restaurant.owner:
         if request.method == 'POST':
-            # Handle the POST request to delete the reservation
             reservation.delete()
-            # Redirect to a relevant page after deletion
-            return redirect('restaurants:dashboard')  # Redirect to the dashboard or any other page
+            return redirect('restaurants:dashboard') 
         else:
-            # Handle GET request, render a confirmation page if needed
             return render(request, 'restaurants/dashboard/delete_reservation.html', {'reservation': reservation})
+
+@login_required
+@user_has_restaurant
+def set_seats(request):
+    restaurant = Restaurant.objects.filter(owner=request.user).first()
+    if request.method == 'POST':
+        form = SeatsForm(request.POST, instance=restaurant)
+        if form.is_valid():
+            form.save()
+            return redirect('restaurants:dashboard')
+    else:
+        form = SeatsForm(instance=restaurant)
+    return render(request, 'restaurants/dashboard/seats.html', {'form': form})

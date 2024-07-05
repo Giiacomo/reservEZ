@@ -34,6 +34,7 @@ urlpatterns = [
     path('set/address/', dv.set_address, name='set_address'),
     path('set/opening-hours/', dv.set_opening_hours, name='set_opening_hours'),
     path('set/tags/', dv.manage_tags, name='manage_tags'),
+    path('set/seats/', dv.set_seats, name='set_seats'),
     path('set/upload_banner/', dv.upload_banner, name='upload_banner'),
     path('set/upload_logo/', dv.upload_logo, name='upload_logo'),
 ]
