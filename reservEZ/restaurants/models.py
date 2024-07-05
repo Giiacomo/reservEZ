@@ -7,7 +7,7 @@ from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from accounts.models import Address
 import os, random
-from django.conf import settings  # Import settings to get BASE_DIR
+from django.conf import settings  
 from datetime import datetime
 
 class OpeningHours(models.Model):
@@ -15,7 +15,7 @@ class OpeningHours(models.Model):
     weekday = models.IntegerField(choices=WEEKDAYS)
     opening_time = models.TimeField()
     closing_time = models.TimeField()
-    available_seats = models.IntegerField(default=0)  # Aggiunto campo per posti disponibili
+    available_seats = models.IntegerField(default=0)  
 
     class Meta:
         unique_together = ('restaurant', 'weekday')
@@ -38,7 +38,7 @@ class Tag(models.Model):
         return self.name
 
 def user_directory_path(instance, filename):
-    # MEDIA_ROOT/user_<username>/<filename>
+    
     return f'user_{instance.owner.username}/{filename}'
 
 class Restaurant(models.Model):
@@ -49,7 +49,7 @@ class Restaurant(models.Model):
     tags = models.ManyToManyField(Tag, blank=True)
     banner = models.ImageField(upload_to=user_directory_path, null=True, blank=True)
     logo = models.ImageField(upload_to=user_directory_path, null=True, blank=True)
-    max_seats = models.IntegerField()  # Aggiunto campo per il numero massimo di posti
+    max_seats = models.IntegerField()  
 
     def get_opening_hours(self):
         return self.opening_hours.all().order_by('weekday')
@@ -72,7 +72,7 @@ class Restaurant(models.Model):
                 if default_banners:
                     self.banner.name = os.path.join('default/banners', random.choice(default_banners))
 
-            # Set default logo if not provided
+            
         if not self.logo:
             default_logos_path = os.path.join(settings.BASE_DIR, 'media/default/logos')
             if os.path.exists(default_logos_path):
@@ -93,7 +93,7 @@ class Restaurant(models.Model):
                 opening_hour.restaurant = self
                 opening_hour.save()
         else:
-            # If it's a new instance, simply save it
+            
             super().save(*args, **kwargs)
 
     def __str__(self):
@@ -103,7 +103,7 @@ class Menu(models.Model):
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='menu')
 
     def clean(self):
-        # Ensure there's only one menu per restaurant
+        
         if self.restaurant.menus.exists() and not self.pk:
             raise ValidationError('A restaurant can only have one menu.')
 
@@ -124,7 +124,7 @@ class Dish(models.Model):
     section = models.ForeignKey(MenuSection, on_delete=models.CASCADE, related_name='dishes')
     dname = models.CharField(max_length=100)
     description = models.TextField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)  # Price field
+    price = models.DecimalField(max_digits=10, decimal_places=2)  
 
     class Meta:
         unique_together = ('section', 'dname')

@@ -9,12 +9,12 @@ from django.utils import timezone
 from restaurants.models import Restaurant, OpeningHours, Tag
 from accounts.models import Address, UserProfile
 from .utils.functions import generate_recommendations
-from .models import Reservation, Order  # Assuming you have a Reservation model
+from .models import Reservation, Order  
 from datetime import timedelta
 
 class GenerateRecommendationsTestCase(TestCase):
     def setUp(self):
-        # Create a list of tags
+        
         self.tags = [Tag.objects.create(name=f'Tag {i}') for i in range(1, 6)]
 
         self.complete_restaurants = []
@@ -50,10 +50,10 @@ class GenerateRecommendationsTestCase(TestCase):
             self.complete_restaurants.append(restaurant)
             self.users.append(user)
 
-        # Create orders and reservations for the test user
+        
         self.test_user = self.users[0]
-        for i, restaurant in enumerate(self.complete_restaurants[:3], start=1):  # Utilizzo solo i primi 3 ristoranti
-            # Utilizza l'orario corrente più un delta per la data e l'ora
+        for i, restaurant in enumerate(self.complete_restaurants[:3], start=1):  
+            
             order_date = timezone.now() + timedelta(days=i)
             reservation_date = timezone.now() + timedelta(days=i)
 
@@ -63,26 +63,26 @@ class GenerateRecommendationsTestCase(TestCase):
     def test_generate_recommendations(self):
         recommendations = generate_recommendations(self.test_user, self.complete_restaurants)
         
-        print("Recommendations:", recommendations)  # Stampa le raccomandazioni
+        print("Recommendations:", recommendations)  
         
-        # Check that only the first three restaurants are recommended
+        
         for restaurant in recommendations:
             self.assertIn(restaurant, self.complete_restaurants[:3])
 
 
-        # Check that recommendations only include restaurants in 'Test City' with user's favorite tags
+        
         for restaurant in recommendations:
             self.assertEqual(restaurant.address.city, 'Test City')
             user_reservation = self.test_user.reservations.filter(restaurant=restaurant).first()
-            if user_reservation and restaurant.tags.exists():  # Check if the restaurant has tags
+            if user_reservation and restaurant.tags.exists():  
                 self.assertTrue(any(tag in user_reservation.restaurant.tags.all() for tag in restaurant.tags.all()))
 
 
-        # Check the order of recommendations based on recent interactions
+        
         recent_restaurant_ids = [restaurant.id for restaurant in self.complete_restaurants[:3]]
         recommended_restaurant_ids = [restaurant.id for restaurant in recommendations]
 
-        # Verifica che i ristoranti raccomandati siano nell'ordine corretto rispetto alle interazioni recenti
+        
         for id in recent_restaurant_ids:
             self.assertIn(id, recommended_restaurant_ids)
             self.assertLess(recommended_restaurant_ids.index(id), recommended_restaurant_ids.index(id) + 1)
@@ -95,7 +95,7 @@ class FilterCompleteRestaurantsTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='testuser', password='testpassword')
         
-        # Complete Restaurant
+        
         self.complete_restaurant = Restaurant.objects.create(
             name='Complete Restaurant',
             address=Address.objects.create(
@@ -117,7 +117,7 @@ class FilterCompleteRestaurantsTestCase(TestCase):
         tag2 = Tag.objects.create(name='Test Tag 2')
         self.complete_restaurant.tags.add(tag1, tag2)
         
-        # Incomplete Restaurant (missing OpeningHours)
+        
         self.incomplete_restaurant = Restaurant.objects.create(
             name='Incomplete Restaurant',
             address=Address.objects.create(
