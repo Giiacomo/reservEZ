@@ -1,55 +1,85 @@
-# Documentazione del Sistema di Gestione delle Prenotazioni ai Ristoranti
+# Introduzione
 
-## Introduzione
+Il Sistema di Reservez è una applicazione web progettata per facilitare la prenotazione e l'ordinazione presso una vasta gamma di ristoranti. Gli utenti possono registrarsi e cercare ristoranti, visualizzare i loro menu, effettuare prenotazioni e ordini, e ricevere raccomandazioni personalizzate in base alle loro preferenze gastronomiche. I ristoranti, dopo essersi registrati, possono gestire le proprie pagine con informazioni dettagliate, inclusi foto del locale, descrizioni e menu.
 
-Il Sistema di Gestione delle Prenotazioni ai Ristoranti è una applicazione web progettata per facilitare la prenotazione e l'ordinazione presso una vasta gamma di ristoranti. Gli utenti possono registrarsi e cercare ristoranti, visualizzare i loro menu, effettuare prenotazioni e ordini, e ricevere raccomandazioni personalizzate in base alle loro preferenze gastronomiche. I ristoranti, dopo essersi registrati, possono gestire le proprie pagine con informazioni dettagliate, inclusi foto del locale, descrizioni e menu.
+# Come installare
 
-## Funzionalità per gli Utenti
+## Clonare
 
-### Registrazione e Accesso
+Per installare e avviare l'applicazione, seguire i passaggi seguenti:
 
-Gli utenti possono registrarsi al sistema fornendo le proprie informazioni personali, inclusi nome, cognome, email e password. Dopo la registrazione, gli utenti possono accedere al sistema utilizzando le loro credenziali.
+1. **Clonare il repository:**
 
-### Ricerca di Ristoranti
+   ```bash
+   git clone https://github.com/Giiacomo/reservEZ.git
+   cd reservez-app
+   ```
 
-Gli utenti possono cercare ristoranti utilizzando diversi criteri, tra cui la posizione, il tipo di cucina, il prezzo e le recensioni degli altri utenti.
+## Preparare il database:
 
-### Visualizzazione dei Dettagli del Ristorante
+Assicurarsi di avere PostgreSQL installato. Creare un database chiamato `reservez` con un utente chiamato `admin` con password a tua scelta e utilizzare la porta di default per PostgreSQL.
 
-Una volta trovato un ristorante di interesse, gli utenti possono visualizzare la pagina del ristorante per ottenere informazioni dettagliate, quali foto del locale, descrizioni, orari di apertura e chiusura e il menu.
+Esempio di comandi SQL per PostgreSQL:
 
-### Prenotazioni e Ordini
+```sql
+CREATE DATABASE reservez;
+CREATE USER admin WITH PASSWORD 'password';
+GRANT ALL PRIVILEGES ON DATABASE reservez TO admin;
+```
 
-Gli utenti possono prenotare un tavolo presso il ristorante selezionato scegliendo la data, l'orario e il numero di persone. Possono anche effettuare ordini dal menu del ristorante per il ritiro.
+## Configurare l'ambiente virtuale:
 
-### Homepage Personalizzata
+Creare un ambiente virtuale con venv e attivarlo:
 
-Gli utenti hanno una homepage personalizzata dove possono visualizzare raccomandazioni di ristoranti in base ai loro precedenti ordini e prenotazioni.
+```bash
+python3 -m venv venv
+source ./venv/bin/activate
+```
 
-## Funzionalità per i Ristoranti
+## Installare le dipendenze:
 
-### Registrazione e Accesso
+Installare le dipendenze necessarie elencate nel file requirements.txt:
 
-I ristoranti possono registrarsi al sistema fornendo le informazioni relative al proprio locale, inclusi nome, indirizzo, contatti e una breve descrizione. Dopo la registrazione, i ristoranti possono accedere al sistema utilizzando le proprie credenziali.
+```bash
+pip install -r requirements.txt
+```
 
-### Gestione della Pagina del Ristorante
+## Configurare le variabili d'ambiente:
 
-I ristoranti hanno accesso a una pagina dedicata dove possono gestire le informazioni del proprio locale, inclusi aggiornamenti delle foto, descrizioni, orari di apertura e chiusura e il menu.
+Creare uno script setenv.sh per impostare le variabili d'ambiente necessarie:
 
-### Ricezione di Ordini e Prenotazioni
+```bash
+# Contenuto di setenv.sh
+export SECRETKEY="secretkey"
+export DB_PSW="password"
+export DB_USER="admin"
+export DB_PORT="porta"  # Utilizzare la porta di default di PostgreSQL
+```
 
-I ristoranti ricevono notifiche di nuovi ordini e prenotazioni effettuati dagli utenti e possono gestirli attraverso il sistema.
+## Eseguire lo script per impostare le variabili d'ambiente:
 
+```bash
+source ./setenv.sh
+```
 
-### Recensioni e Valutazioni
+## Inizializzare il database:
 
-Gli utenti possono lasciare recensioni e valutazioni sui ristoranti visitati, fornendo feedback agli altri utenti.
+Eseguire lo script per inizializzare il database con dati di configurazione iniziale:
 
-### Sistema di Raccomandazioni
+```bash
+python3 ./manage.py shell < initialize_db.py
+```
 
-Il sistema utilizza un sistema di raccomandazione per suggerire ai utenti ristoranti in base ai loro gusti e alle loro abitudini.
+## Avviare il server in modalità debug:
 
-### Messaggistica
+Avviare il server Django in modalità debug:
 
-Gli utenti e i ristoranti possono comunicare tra loro attraverso un sistema di messaggistica integrato per coordinare dettagli relativi a prenotazioni e ordini.
+```bash
+python3 manage.py runserver
+```
 
+L'applicazione sarà disponibile all'indirizzo http://localhost:8000/.
+
+## Documentazione aggiuntiva
+
+Per ulteriori dettagli sull'uso dell'applicazione, consultare la documentazione fornita in formato pdf.
