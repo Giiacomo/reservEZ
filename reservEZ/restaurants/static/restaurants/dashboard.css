@@ -1,11 +1,11 @@
 #menu-sections {
   height: 500px;
   overflow-y: auto;
-  scrollbar-width: thin; /* For Firefox */
-  scrollbar-color: #999 transparent; /* For Firefox */
+  scrollbar-width: thin; 
+  scrollbar-color: #999 transparent; 
 }
 
-/* For Chrome, Safari, and Opera */
+
 #menu-sections::-webkit-scrollbar {
   width: 8px;
 }
@@ -37,7 +37,7 @@
 }
 
 .custom-btn-primary:hover {
-  background-color: #0056b3; /* Darker shade for hover */
+  background-color: #0056b3; 
   border-color: #0056b3;
 }
 
@@ -48,7 +48,7 @@
 }
 
 .custom-btn-danger:hover {
-  background-color: #c82333; /* Darker shade for hover */
+  background-color: #c82333; 
   border-color: #bd2130;
 }
 

@@ -39,7 +39,7 @@ class ReservationForm(forms.ModelForm):
             Submit('submit', 'Submit'),
         )
 
-        # Populate the weekday choices with the next available dates the restaurant is open
+        
         today = timezone.now().date()
         days = []
         for i in range(7):
@@ -70,11 +70,11 @@ class ReservationForm(forms.ModelForm):
             if not (opening_time <= reservation_time <= closing_time):
                 raise forms.ValidationError('The reservation time is outside the opening hours.')
 
-            # Check if the user has already made a reservation for this day at the same restaurant
+            
             if Reservation.objects.filter(restaurant=self.restaurant, user=self.user, date=date).exists():
                 raise forms.ValidationError('You can only make one reservation per day at this restaurant.')
 
-            # Check available seats
+            
             total_reserved_seats = Reservation.objects.filter(restaurant=self.restaurant, date=date).aggregate(total_seats=Sum('number_of_people'))['total_seats']
             if total_reserved_seats is None:
                 total_reserved_seats = 0
@@ -82,7 +82,7 @@ class ReservationForm(forms.ModelForm):
             if number_of_people > available_seats:
                 raise forms.ValidationError('There are no available seats for this time slot.')
 
-            # Set the date field in the cleaned data
+            
             cleaned_data['date'] = date
 
         return cleaned_data

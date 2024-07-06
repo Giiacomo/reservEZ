@@ -1,4 +1,4 @@
-# forms.py
+
 from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Div, Submit
@@ -27,7 +27,7 @@ class RestaurantTagForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['tags'].choices = TAG_CHOICES  # Use the TAG_CHOICES from constants.py
+        self.fields['tags'].choices = TAG_CHOICES  
 
     def clean_tags(self):
         tags = self.cleaned_data.get('tags', [])
@@ -38,8 +38,8 @@ class RestaurantTagForm(forms.ModelForm):
     def save(self, commit=True):
         instance = super().save(commit=False)
         tags_data = self.cleaned_data['tags']
-        tags = [Tag.objects.get_or_create(name=tag)[0] for tag in tags_data]  # Retrieve or create Tag instances
-        instance.tags.set(tags, clear=True)  # Set the tags for the Restaurant
+        tags = [Tag.objects.get_or_create(name=tag)[0] for tag in tags_data]  
+        instance.tags.set(tags, clear=True)  
         if commit:
             instance.save()
         return instance
@@ -82,7 +82,7 @@ class OpeningHoursForm(forms.ModelForm):
             if opening_time >= closing_time:
                 raise ValidationError("Closing time must be after opening time.", code='invalid_time_range')
 
-        # Handle the case where either opening_time or closing_time is None
+        
         if opening_time is None and closing_time is not None:
             raise ValidationError("Opening time is required.", code='missing_opening_time')
         elif opening_time is not None and closing_time is None:
@@ -141,7 +141,7 @@ class RestaurantForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         name = cleaned_data.get('name')
-        # Check if a restaurant with the same name already exists
+        
         if Restaurant.objects.filter(owner=self.user, name=name).exists():
             raise forms.ValidationError('A restaurant with this name already exists for this owner.')
         return cleaned_data
@@ -153,7 +153,7 @@ class MenuSectionForm(forms.ModelForm):
         instance = kwargs.get('instance')
         super(MenuSectionForm, self).__init__(*args, **kwargs)
         
-        # If modifying an existing section, populate the form fields with its data
+        
         if instance and instance.pk:
             self.fields['sname'].initial = instance.sname
 
@@ -174,7 +174,7 @@ class DishForm(forms.ModelForm):
         instance = kwargs.get('instance')
         super(DishForm, self).__init__(*args, **kwargs)
         
-        # If modifying an existing dish, set the queryset for the section field based on the restaurant of the dish
+        
         if instance and instance.pk:
             self.fields['section'].queryset = MenuSection.objects.filter(menu__restaurant=instance.section.menu.restaurant)
         elif restaurant:

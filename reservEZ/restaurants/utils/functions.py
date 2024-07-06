@@ -108,7 +108,6 @@ def filter_restaurants(search_query='', selected_city='', selected_tag='', user_
     for restaurant in restaurants:
         restaurant.is_open = restaurant.is_open_now()
         restaurant.is_in_user_city = restaurant.address.city == user_city
-        print(restaurant.is_in_user_city)
     sorted_restaurants = sorted(
         restaurants,
         key=lambda r: (
@@ -116,5 +115,4 @@ def filter_restaurants(search_query='', selected_city='', selected_tag='', user_
             not r.is_open,          
         )
     )
-    print(sorted_restaurants)
     return sorted_restaurants

@@ -17,10 +17,9 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         message = event['message']
         notification_count = event['count']
 
-        # Log the data being sent
+        
         print("Sending notification:", message, "with count:", notification_count)
 
-        # Send the notification message to the client
         await self.send(text_data=json.dumps({
             'message': message,
             'notification_count': notification_count,

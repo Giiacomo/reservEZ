@@ -20,7 +20,7 @@ def create_order_notification(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=Order)
 def order_status_notification(sender, instance, **kwargs):
-    if instance.status in ['A', 'R']:  # Accepted or Ready
+    if instance.status in ['A', 'R']:  
         message = f"Your order on {instance.date} is now {instance.get_status_display()}."
         create_notification(instance.user, message, f'/restaurants/page/{instance.restaurant.id}/')
 
@@ -41,10 +41,10 @@ def create_notification(user, message, link):
     )
     update_notification_count(user)
 
-    # Send notification via WebSocket
+    
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
-        'notifications',  # Send to 'notifications' group
+        'notifications',  
         {
             'type': 'send_notification',
             'message': notification.message,
