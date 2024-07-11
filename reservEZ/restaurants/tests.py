@@ -37,7 +37,8 @@ class GenerateRecommendationsTestCase(TestCase):
                 name=f'Restaurant {i}',
                 address=address,
                 owner=user,
-                description=f'Description {i}'
+                description=f'Description {i}',
+                max_seats=50
             )
             OpeningHours.objects.create(
                 restaurant=restaurant,
@@ -102,10 +103,11 @@ class FilterCompleteRestaurantsTestCase(TestCase):
                 street='Test Street',
                 city='Test City',
                 state='Test State',
-                country='Test Country'
+                country='Test Country',
             ),
             owner=self.user,
-            description='Test Description'
+            description='Test Description',
+            max_seats=50
         )
         OpeningHours.objects.create(
             restaurant=self.complete_restaurant,
@@ -124,10 +126,12 @@ class FilterCompleteRestaurantsTestCase(TestCase):
                 street='Another Test Street',
                 city='Another Test City',
                 state='Another Test State',
-                country='Another Test Country'
+                country='Another Test Country',
             ),
             owner=self.user,
-            description='Another Test Description'
+            description='Another Test Description',
+            max_seats=50
+
         )
         self.incomplete_restaurant.tags.add(tag1)
 
@@ -140,4 +144,5 @@ class FilterCompleteRestaurantsTestCase(TestCase):
         
         self.assertTrue(hasattr(response, 'context'))
         self.assertIn(self.complete_restaurant, response.context['all_restaurants'])
+        print(self.incomplete_restaurant)
         self.assertNotIn(self.incomplete_restaurant, response.context['all_restaurants'])

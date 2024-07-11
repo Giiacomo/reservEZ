@@ -10,7 +10,6 @@ def user_has_restaurant(view_func):
         if request.user.owned_restaurants.first() is not None:
             return view_func(request, *args, **kwargs)
         else:
-            
             return redirect('restaurants:create_restaurant')
     return _wrapped_view
 
@@ -37,7 +36,8 @@ def filter_complete_restaurants(view_func):
         complete_restaurants = []
 
         for restaurant in all_restaurants:
-            if not get_incomplete_fields(restaurant):
+            incomplete_fields = get_incomplete_fields(restaurant=restaurant)
+            if not incomplete_fields:
                 complete_restaurants.append(restaurant)
 
         request.complete_restaurants = complete_restaurants

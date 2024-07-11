@@ -85,8 +85,8 @@ def get_incomplete_fields(restaurant):
 
 
 
-def filter_restaurants(search_query='', selected_city='', selected_tag='', user_city=None):
-    filtered_restaurants = Restaurant.objects.all()
+def filter_restaurants(search_query='', selected_city='', selected_tag='', user_city=None, restaurants=None):
+    filtered_restaurants = restaurants
 
     
     if search_query:

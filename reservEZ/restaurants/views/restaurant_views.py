@@ -132,7 +132,7 @@ def user_homepage(request):
         user_profile = UserProfile.objects.get(user=request.user)
         user_city = user_profile.address.city if user_profile.address else None
 
-    filtered_restaurants = filter_restaurants(search_query, selected_city, selected_tag, user_city)
+    filtered_restaurants = filter_restaurants(search_query, selected_city, selected_tag, user_city, restaurants=request.complete_restaurants)
     
     for restaurant in filtered_restaurants:
         restaurant.is_open = restaurant.is_open_now()
